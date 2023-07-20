@@ -8,6 +8,7 @@ import java.util.Map;
 
 public class Main {
     public static void main(String[] args) {
+//        https://github.com/fuzhengwei/CodeGuide
 //        System.out.println("Hello world!");
         MapperProxyFactory<IUserDao> factory = new MapperProxyFactory<>(IUserDao.class);
         Map<String, String> sqlSession = new HashMap<>();
