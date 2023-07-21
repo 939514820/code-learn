@@ -1,6 +1,8 @@
 package com.example.bind;
 
+import com.example.builder.Configuration;
 import com.example.session.SqlSession;
+import com.example.util.ClassScanner;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,12 +15,19 @@ public class MapperRegistry {
      */
     private final Map<Class<?>, MapperProxyFactory<?>> knownMappers = new HashMap<>();
 
+    public MapperRegistry(Configuration configuration) {
+        // TODO 配置获取dao路径
+        // 生成代理类对象
+        addMappers("com.example.dao");
+    }
+
     public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
         final MapperProxyFactory<T> mapperProxyFactory = (MapperProxyFactory<T>) knownMappers.get(type);
         if (mapperProxyFactory == null) {
             throw new RuntimeException("Type " + type + " is not known to the MapperRegistry.");
         }
         try {
+            // 根据接口生成代理类对象
             return mapperProxyFactory.newInstance(sqlSession);
         } catch (Exception e) {
             throw new RuntimeException("Error getting mapper instance. Cause: " + e, e);
@@ -37,8 +46,12 @@ public class MapperRegistry {
         }
     }
 
+    private <T> boolean hasMapper(Class<T> type) {
+        return knownMappers.containsKey(type);
+    }
+
     public void addMappers(String packageName) {
-        Set<Class<?>> mapperSet = ClassScanner.scanPackage(packageName);
+        Set<Class<?>> mapperSet = ClassScanner.getClassList(packageName,false);
         for (Class<?> mapperClass : mapperSet) {
             addMapper(mapperClass);
         }
