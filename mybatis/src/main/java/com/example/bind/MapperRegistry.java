@@ -1,6 +1,7 @@
 package com.example.bind;
 
 import com.example.builder.Configuration;
+import com.example.builder.MappedStatement;
 import com.example.session.SqlSession;
 import com.example.util.ClassScanner;
 
@@ -14,11 +15,13 @@ public class MapperRegistry {
      * 将已添加的映射器代理加入到 HashMap
      */
     private final Map<Class<?>, MapperProxyFactory<?>> knownMappers = new HashMap<>();
+    /**
+     * 映射的语句，存在Map里
+     */
+    private final Map<String, MappedStatement> mappedStatements = new HashMap<>();
+    public MapperRegistry() {
 
-    public MapperRegistry(Configuration configuration) {
-        // TODO 配置获取dao路径
-        // 生成代理类对象
-        addMappers("com.example.dao");
+//        addMappers("com.example.dao");
     }
 
     public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
@@ -57,4 +60,7 @@ public class MapperRegistry {
         }
     }
 
+    public Map<String, MappedStatement> getMappedStatements() {
+        return mappedStatements;
+    }
 }

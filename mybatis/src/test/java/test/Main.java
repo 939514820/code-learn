@@ -1,15 +1,13 @@
-package com.example;
+package test;
 
-import com.example.bind.MapperRegistry;
 import com.example.builder.SqlSessionFactoryBuilder;
-import com.example.session.DefaultSqlSessionFactory;
 import com.example.session.SqlSession;
 import com.example.session.SqlSessionFactory;
-import com.example.dao.IUserDao;
+import com.example.test.dao.IUserDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Reader;
+import java.io.File;
 
 public class Main {
     private static Logger log = LoggerFactory.getLogger(Main.class);
@@ -33,14 +31,16 @@ public class Main {
 //        SqlSessionFactory sqlSessionFactory = new DefaultSqlSessionFactory(registry);
 //        SqlSession sqlSession = sqlSessionFactory.openSession();
 // 1. 从SqlSessionFactory中获取SqlSession
-        Reader reader = Resources.getResourceAsReader("mybatis-config-datasource.xml");
+//        Reader reader = Resources.getResourceAsReader("D:\\IdeaProjects\\code-learn\\mybatis\\src\\main\\resources\\mapper\\User.xml");
+        File reader = new File("D:\\IdeaProjects\\code-learn\\mybatis\\src\\main\\resources\\mapper\\User.xml");
         SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
         SqlSession sqlSession = sqlSessionFactory.openSession();
         // 3. 获取映射器对象
         IUserDao userDao = sqlSession.getMapper(IUserDao.class);
 
         // 4. 测试验证
-        String res = userDao.queryUserInfoById("10001");
+        String res = userDao.queryUserInfoById(1);
+
         log.info("测试结果：{}", res);
     }
 }

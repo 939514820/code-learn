@@ -8,8 +8,7 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
     private final MapperRegistry mapperRegistry;
 
     public DefaultSqlSessionFactory(Configuration configuration) {
-        mapperRegistry = new MapperRegistry(configuration);
-
+        mapperRegistry = configuration.mapperRegistry;
     }
 
     @Override

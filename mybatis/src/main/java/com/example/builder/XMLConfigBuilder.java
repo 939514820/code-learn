@@ -3,9 +3,11 @@ package com.example.builder;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
+import org.dom4j.Namespace;
 import org.dom4j.io.SAXReader;
 import org.xml.sax.InputSource;
 
+import java.io.File;
 import java.io.Reader;
 import java.util.List;
 
@@ -13,13 +15,13 @@ public class XMLConfigBuilder {
     private Configuration configuration;
     private Element root;
 
-    public XMLConfigBuilder(Reader reader) {
+    public XMLConfigBuilder(File file) {
         // 1. 调用父类初始化Configuration
         configuration = new Configuration();
         // 2. dom4j 处理 xml
         SAXReader saxReader = new SAXReader();
         try {
-            Document document = saxReader.read((new InputSource(reader)));
+            Document document = saxReader.read(file);
             root = document.getRootElement();
         } catch (DocumentException e) {
             e.printStackTrace();
@@ -29,25 +31,37 @@ public class XMLConfigBuilder {
     public Configuration parse() {
         try {
             // 解析映射器
-            mapperElement(root.element("mappers"));
+            mapperElement();
         } catch (Exception e) {
             throw new RuntimeException("Error parsing SQL Mapper Configuration. Cause: " + e, e);
         }
         return configuration;
     }
 
-    private void mapperElement(Element mappers) throws Exception {
-        List<Element> mapperList = mappers.elements("mapper");
-        for (Element e : mapperList) {
-            // 解析处理，具体参照源码
-            Object data = e.getData();
-            // 添加解析 SQL
-            MappedStatement mappedStatements = new MappedStatement();
-            mappedStatements.setId();
-            configuration.addMappedStatement(mappedStatements);
+    private void mapperElement() throws Exception {
+        List<Element> mapperList = root.elements();
+        String namespace = mapperList.get(0).attributeValue("namespace");
+        for (Element sqlitem : mapperList) {
+            // mapper节点子元素
+            List<Element> books = sqlitem.elements();
+            for (Element book : books) {
+                String id = book.attributeValue("id");
+                String parameterType = book.attributeValue("parameterType");
+                String resultType = book.attributeValue("resultType");
+                System.out.println(id + "_" + parameterType + "_" + resultType);
+                String name = book.getName();//获取当前元素名
+                String text = book.getText();//获取当前元素值
+                System.out.println(":name= " + name + " text: " + text);
+                // 添加解析 SQL
+                MappedStatement mappedStatements = new MappedStatement();
+                mappedStatements.setId(id);
+                mappedStatements.setParameterType(parameterType);
+                mappedStatements.setResultType(resultType);
+                mappedStatements.setSql(text);
+                configuration.addMappedStatement(mappedStatements);
+            }
         }
-
         // 注册Mapper映射器
-        configuration.addMapper(Resources.classForName(namespace));
+        configuration.addMapper(Class.forName(namespace));
     }
 }
