@@ -1,37 +1,226 @@
 package com.example.session;
 
-public interface SqlSession {
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 
+public interface SqlSession {
     /**
-     * Retrieve a single row mapped from the statement key
-     * 根据指定的SqlID获取一条记录的封装对象
+     * Retrieve a single row mapped from the statement key.
      *
-     * @param <T>       the returned object type 封装之后的对象类型
-     * @param statement sqlID
-     * @return Mapped object 封装之后的对象
+     * @param <T>
+     *          the returned object type
+     * @param statement
+     *          the statement
+     *
+     * @return Mapped object
      */
     <T> T selectOne(String statement);
 
     /**
      * Retrieve a single row mapped from the statement key and parameter.
-     * 根据指定的SqlID获取一条记录的封装对象，只不过这个方法容许我们可以给sql传递一些参数
-     * 一般在实际使用中，这个参数传递的是pojo，或者Map或者ImmutableMap
      *
-     * @param <T>       the returned object type
-     * @param statement Unique identifier matching the statement to use.
-     * @param parameter A parameter object to pass to the statement.
+     * @param <T>
+     *          the returned object type
+     * @param statement
+     *          Unique identifier matching the statement to use.
+     * @param parameter
+     *          A parameter object to pass to the statement.
+     *
      * @return Mapped object
      */
     <T> T selectOne(String statement, Object parameter);
 
     /**
-     * Retrieves a mapper.
-     * 得到映射器，这个巧妙的使用了泛型，使得类型安全
+     * Retrieve a list of mapped objects from the statement key.
      *
-     * @param <T>  the mapper type
-     * @param type Mapper interface class
+     * @param <E>
+     *          the returned list element type
+     * @param statement
+     *          Unique identifier matching the statement to use.
+     *
+     * @return List of mapped object
+     */
+    <E> List<E> selectList(String statement);
+
+    /**
+     * Retrieve a list of mapped objects from the statement key and parameter.
+     *
+     * @param <E>
+     *          the returned list element type
+     * @param statement
+     *          Unique identifier matching the statement to use.
+     * @param parameter
+     *          A parameter object to pass to the statement.
+     *
+     * @return List of mapped object
+     */
+    <E> List<E> selectList(String statement, Object parameter) throws SQLException;
+
+
+    /**
+     * The selectMap is a special case in that it is designed to convert a list of results into a Map based on one of the
+     * properties in the resulting objects. Eg. Return a of Map[Integer,Author] for selectMap("selectAuthors","id")
+     *
+     * @param <K>
+     *          the returned Map keys type
+     * @param <V>
+     *          the returned Map values type
+     * @param statement
+     *          Unique identifier matching the statement to use.
+     * @param mapKey
+     *          The property to use as key for each value in the list.
+     *
+     * @return Map containing key pair data.
+     */
+    <K, V> Map<K, V> selectMap(String statement, String mapKey);
+
+    /**
+     * The selectMap is a special case in that it is designed to convert a list of results into a Map based on one of the
+     * properties in the resulting objects.
+     *
+     * @param <K>
+     *          the returned Map keys type
+     * @param <V>
+     *          the returned Map values type
+     * @param statement
+     *          Unique identifier matching the statement to use.
+     * @param parameter
+     *          A parameter object to pass to the statement.
+     * @param mapKey
+     *          The property to use as key for each value in the list.
+     *
+     * @return Map containing key pair data.
+     */
+    <K, V> Map<K, V> selectMap(String statement, Object parameter, String mapKey);
+
+    /**
+     * Execute an insert statement.
+     *
+     * @param statement
+     *          Unique identifier matching the statement to execute.
+     *
+     * @return int The number of rows affected by the insert.
+     */
+    int insert(String statement);
+
+    /**
+     * Execute an insert statement with the given parameter object. Any generated autoincrement values or selectKey
+     * entries will modify the given parameter object properties. Only the number of rows affected will be returned.
+     *
+     * @param statement
+     *          Unique identifier matching the statement to execute.
+     * @param parameter
+     *          A parameter object to pass to the statement.
+     *
+     * @return int The number of rows affected by the insert.
+     */
+    int insert(String statement, Object parameter);
+
+    /**
+     * Execute an update statement. The number of rows affected will be returned.
+     *
+     * @param statement
+     *          Unique identifier matching the statement to execute.
+     *
+     * @return int The number of rows affected by the update.
+     */
+    int update(String statement);
+
+    /**
+     * Execute an update statement. The number of rows affected will be returned.
+     *
+     * @param statement
+     *          Unique identifier matching the statement to execute.
+     * @param parameter
+     *          A parameter object to pass to the statement.
+     *
+     * @return int The number of rows affected by the update.
+     */
+    int update(String statement, Object parameter);
+
+    /**
+     * Execute a delete statement. The number of rows affected will be returned.
+     *
+     * @param statement
+     *          Unique identifier matching the statement to execute.
+     *
+     * @return int The number of rows affected by the delete.
+     */
+    int delete(String statement);
+
+    /**
+     * Execute a delete statement. The number of rows affected will be returned.
+     *
+     * @param statement
+     *          Unique identifier matching the statement to execute.
+     * @param parameter
+     *          A parameter object to pass to the statement.
+     *
+     * @return int The number of rows affected by the delete.
+     */
+    int delete(String statement, Object parameter);
+
+    /**
+     * Flushes batch statements and commits database connection. Note that database connection will not be committed if no
+     * updates/deletes/inserts were called. To force the commit call {@link SqlSession#commit(boolean)}
+     */
+    void commit();
+
+    /**
+     * Flushes batch statements and commits database connection.
+     *
+     * @param force
+     *          forces connection commit
+     */
+    void commit(boolean force);
+
+    /**
+     * Discards pending batch statements and rolls database connection back. Note that database connection will not be
+     * rolled back if no updates/deletes/inserts were called. To force the rollback call
+     * {@link SqlSession#rollback(boolean)}
+     */
+    void rollback();
+
+    /**
+     * Discards pending batch statements and rolls database connection back. Note that database connection will not be
+     * rolled back if no updates/deletes/inserts were called.
+     *
+     * @param force
+     *          forces connection rollback
+     */
+    void rollback(boolean force);
+
+
+    /**
+     * Clears local session cache.
+     */
+    void clearCache();
+
+    /**
+     * Retrieves current configuration.
+     *
+     * @return Configuration
+     */
+    Configuration getConfiguration();
+
+    /**
+     * Retrieves a mapper.
+     *
+     * @param <T>
+     *          the mapper type
+     * @param type
+     *          Mapper interface class
+     *
      * @return a mapper bound to this SqlSession
      */
     <T> T getMapper(Class<T> type);
 
+    /**
+     * Retrieves inner database connection.
+     *
+     * @return Connection
+     */
+    Connection getConnection();
 }

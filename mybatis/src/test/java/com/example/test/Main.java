@@ -1,4 +1,4 @@
-package test;
+package com.example.test;
 
 import com.example.builder.SqlSessionFactoryBuilder;
 import com.example.session.SqlSession;
@@ -17,8 +17,8 @@ public class Main {
 //        System.out.println("Hello world!");
 //        MapperProxyFactory<IUserDao> factory = new MapperProxyFactory<>(IUserDao.class);
 //        Map<String, String> sqlSession = new HashMap<>();
-//        sqlSession.put("com.example.test.IUserDao.queryUserName", "模拟执行 Mapper.xml 中 SQL 语句的操作：查询用户姓名");
-//        sqlSession.put("com.example.test.IUserDao.queryUserAge", "模拟执行 Mapper.xml 中 SQL 语句的操作：查询用户年龄");
+//        sqlSession.put("com.example.test.dao.IUserDao.queryUserName", "模拟执行 Mapper.xml 中 SQL 语句的操作：查询用户姓名");
+//        sqlSession.put("com.example.test.dao.IUserDao.queryUserAge", "模拟执行 Mapper.xml 中 SQL 语句的操作：查询用户年龄");
 //        IUserDao iUserDao = factory.newInstance(sqlSession);
 //        String zhangsan = iUserDao.queryUserName("zhangsan");
 //        System.out.println(zhangsan);
@@ -32,15 +32,23 @@ public class Main {
 //        SqlSession sqlSession = sqlSessionFactory.openSession();
 // 1. 从SqlSessionFactory中获取SqlSession
 //        Reader reader = Resources.getResourceAsReader("D:\\IdeaProjects\\code-learn\\mybatis\\src\\main\\resources\\mapper\\User.xml");
-        File reader = new File("D:\\IdeaProjects\\code-learn\\mybatis\\src\\main\\resources\\mapper\\User.xml");
-        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
-        SqlSession sqlSession = sqlSessionFactory.openSession();
-        // 3. 获取映射器对象
-        IUserDao userDao = sqlSession.getMapper(IUserDao.class);
+//        File reader = new File("D:\\IdeaProjects\\code-learn\\mybatis\\src\\test\\java\\resources\\mapper\\User.xml");
+//        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
+//        SqlSession sqlSession = sqlSessionFactory.openSession();
+//        // 3. 获取映射器对象
+//        IUserDao userDao = sqlSession.getMapper(IUserDao.class);
+//
+//        // 4. 测试验证
+//        String res = userDao.queryUserInfoById(1L);
+//
+//        log.info("测试结果：{}", res);
 
-        // 4. 测试验证
-        String res = userDao.queryUserInfoById(1);
-
-        log.info("测试结果：{}", res);
+        User user = new User();
+        try {
+            user.getClass().getMethod("setId", new Integer(1).getClass());
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
     }
+
 }

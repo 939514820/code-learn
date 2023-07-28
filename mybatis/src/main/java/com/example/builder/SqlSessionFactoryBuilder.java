@@ -1,6 +1,7 @@
 package com.example.builder;
 
-import com.example.session.DefaultSqlSessionFactory;
+import com.example.session.Configuration;
+import com.example.session.defaults.DefaultSqlSessionFactory;
 import com.example.session.SqlSessionFactory;
 
 import java.io.File;
