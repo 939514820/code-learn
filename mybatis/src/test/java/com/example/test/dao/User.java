@@ -1,4 +1,4 @@
-package com.example.test;
+package com.example.test.dao;
 
 public class User {
     private String name;

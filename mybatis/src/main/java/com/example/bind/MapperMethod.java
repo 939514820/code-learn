@@ -55,10 +55,10 @@ public class MapperMethod {
 //                } else {
                 Object param = method.convertArgsToSqlCommandParam(args);
                 result = sqlSession.selectOne(command.getName(), param);
-                if (method.returnsOptional() && (result == null || !method.getReturnType().equals(result.getClass()))) {
-                    result = Optional.ofNullable(result);
-//                    }
-                }
+//                if (method.returnsOptional() && (result == null || !method.getReturnType().equals(result.getClass()))) {
+//                    result = Optional.ofNullable(result);
+////                    }
+//                }
                 break;
             case FLUSH:
 //                result = sqlSession.flushStatements();

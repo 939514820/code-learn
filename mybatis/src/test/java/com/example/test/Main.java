@@ -4,6 +4,8 @@ import com.example.builder.SqlSessionFactoryBuilder;
 import com.example.session.SqlSession;
 import com.example.session.SqlSessionFactory;
 import com.example.test.dao.IUserDao;
+import com.example.test.dao.User;
+import com.example.util.Resources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,31 +26,26 @@ public class Main {
 //        System.out.println(zhangsan);
 
         // 1. 注册 Mapper
-//        MapperRegistry registry = new MapperRegistry();
-//        registry.addMappers("com.example.dao");
-//        // 从配置文件读取
-//        // 2. 从 SqlSession 工厂获取 Session
-//        SqlSessionFactory sqlSessionFactory = new DefaultSqlSessionFactory(registry);
-//        SqlSession sqlSession = sqlSessionFactory.openSession();
-// 1. 从SqlSessionFactory中获取SqlSession
-//        Reader reader = Resources.getResourceAsReader("D:\\IdeaProjects\\code-learn\\mybatis\\src\\main\\resources\\mapper\\User.xml");
-//        File reader = new File("D:\\IdeaProjects\\code-learn\\mybatis\\src\\test\\java\\resources\\mapper\\User.xml");
-//        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
-//        SqlSession sqlSession = sqlSessionFactory.openSession();
-//        // 3. 获取映射器对象
-//        IUserDao userDao = sqlSession.getMapper(IUserDao.class);
-//
-//        // 4. 测试验证
-//        String res = userDao.queryUserInfoById(1L);
-//
-//        log.info("测试结果：{}", res);
 
-        User user = new User();
-        try {
-            user.getClass().getMethod("setId", new Integer(1).getClass());
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
+// 1. 从SqlSessionFactory中获取SqlSession
+//        File reader = new File("D:\\IdeaProjects\\code-learn\\mybatis\\src\\test\\java\\resources\\mapper\\User.xml");
+        File reader = new File("D:\\IdeaProjects\\code-learn\\mybatis\\src\\test\\java\\resources\\mappers.xml");
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        // 3. 获取映射器对象
+        IUserDao userDao = sqlSession.getMapper(IUserDao.class);
+
+        // 4. 测试验证
+        User res = userDao.queryUserInfoById(1L);
+
+        log.info("测试结果：{}", res);
+
+//        User user = new User();
+//        try {
+//            user.getClass().getMethod("setId", new Integer(1).getClass());
+//        } catch (NoSuchMethodException e) {
+//            throw new RuntimeException(e);
+//        }
     }
 
 }

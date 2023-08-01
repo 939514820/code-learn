@@ -17,20 +17,18 @@ package com.example.executor;
 
 import com.example.datasource.Connector;
 import com.example.mapping.MappedStatement;
-import com.example.session.BoundSql;
 import com.example.session.Configuration;
 import com.example.session.RowBounds;
 import com.example.transaction.Transaction;
 import com.example.type.JdbcType;
+import lombok.extern.slf4j.Slf4j;
 import sun.plugin2.main.server.ResultHandler;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
+@Slf4j
 /**
  * @author Clinton Begin
  */
@@ -61,67 +59,18 @@ public class SimpleExecutor extends BaseExecutor {
     public <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler) throws SQLException {
         Statement stmt = null;
         try {
-            Configuration configuration = ms.getConfiguration();
-//      StatementHandler handler = configuration.newStatementHandler(wrapper, ms, parameter, rowBounds, resultHandler,
-//              boundSql);
-//      stmt = prepareStatement(handler, ms.getStatementLog());
+            // 获取数据源的连接
             Connector connector = new Connector();
             PreparedStatement statement = connector.getConnection().prepareStatement(ms.getSql());
             ResultSet resultSet = statement.executeQuery();
-//            ResultSetMetaData metaData = resultSet.getMetaData();
-//            final int columnCount = metaData.getColumnCount();
-//            for (int i = 1; i <= columnCount; i++) {
-//                columnNames.add(metaData.getColumnLabel(i));
-//                jdbcTypes.add(JdbcType.forCode(metaData.getColumnType(i)));
-//                classNames.add(metaData.getColumnClassName(i));
-//            }
-//            List<E> result = new ArrayList<>();
-//            while (resultSet.next()) {
-//                E instance = (E)ms.getResultType().getClass().newInstance();
-//                for (int i = 1; i < columnCount; i++) {
-//                    String columnName = columnNames.get(i);
-//                    Object value = resultSet.getObject(columnName);
-//
-//                    try {
-//                        String setMethod = "set" + columnName.substring(0, 1).toUpperCase() + columnName.substring(1);
-//                        Method method = ms.getResultType().getClass().getMethod(setMethod, value.getClass());
-//                        try {
-//                            method.invoke(instance, value);
-//                        } catch (InvocationTargetException e) {
-//                            throw new RuntimeException(e);
-//                        }
-//
-//                    } catch (NoSuchMethodException e) {
-//                        throw new RuntimeException(e);
-//                    }
-//
-////                    Object name = resultSet.getObject("name");
-////                    Object age = resultSet.getObject("age");
-////                    user.setId((int) id);
-////                    user.setName((String) name);
-////                    user.setAge((Integer) age);
-////                    System.out.println(value);
-//                }
-//                result.add(instance);
-//            }
-////            resultSet2Obj(resultSet, Class.forName(ms.getResultType().getClass().getName()));
-//            System.out.println(Arrays.toString(columnNames.toArray()));
-//            System.out.println(Arrays.toString(jdbcTypes.toArray()));
-//            System.out.println(Arrays.toString(classNames.toArray()));
-            List<E> result = resultSet2Obj(resultSet, ms.getResultType().getClass());
-            return result;
+            // handler抽象出来去处理
+            return  resultSet2Obj(resultSet, ms.getResultType().getClass());
         }
-//        catch (InstantiationException e) {
-//            throw new RuntimeException(e);
-//        } catch (IllegalAccessException e) {
-//            throw new RuntimeException(e);
-//        }
         finally {
             closeStatement(stmt);
         }
     }
 
-//    resultSet2Obj(resultSet, Class.forName(xNode.getResultType()));
 
     private <T> List<T> resultSet2Obj(ResultSet resultSet, Class<?> clazz) {
         List<T> list = new ArrayList<>();
@@ -130,6 +79,7 @@ public class SimpleExecutor extends BaseExecutor {
             int columnCount = metaData.getColumnCount();
             // 每次遍历行值
             while (resultSet.next()) {
+                log.info(clazz.getName());
                 T obj = (T) clazz.newInstance();
                 for (int i = 1; i <= columnCount; i++) {
                     Object value = resultSet.getObject(i);
@@ -141,6 +91,7 @@ public class SimpleExecutor extends BaseExecutor {
                     } else {
                         method = clazz.getMethod(setMethod, value.getClass());
                     }
+                    // 执行实例的方法
                     method.invoke(obj, value);
                 }
                 list.add(obj);

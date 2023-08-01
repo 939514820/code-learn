@@ -1,12 +1,32 @@
 package com.example.datasource;
 
 
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
+
+import java.io.File;
 import java.sql.*;
+import java.util.List;
 
 public class Connector {
     private Connection conn;
 
     public Connection getConnection() {
+
+        File file = new File("D:\\IdeaProjects\\code-learn\\mybatis\\src\\test\\java\\resources\\datasource.xml");
+        SAXReader reader = new SAXReader();
+        try {
+            Document document = reader.read(file);
+            Element rootElement = document.getRootElement();
+            List<Element> config = rootElement.elements();
+            for (Element element : config) {
+                // 设置值到source中
+            }
+        } catch (DocumentException e) {
+            throw new RuntimeException(e);
+        }
 
 // 2.用户信息和url
         String url = "jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=utf8&useSSL=false";
@@ -21,27 +41,4 @@ public class Connector {
         }
         return conn;
     }
-
-//    public User execute(String sql) {
-//        User user = new User();
-//        // 5.执行SQL
-//        // 4.执行SQL的对象
-//        Statement sta = null;
-//        try {
-//            sta = conn.prepareStatement(sql);
-//            ResultSet rs = sta.executeQuery(sql);
-//            while (rs.next()) {
-//                // TODO 写死
-//                Object id = rs.getObject("id");
-//                Object name = rs.getObject("name");
-//                Object age = rs.getObject("age");
-//                user.setId((int) id);
-//                user.setName((String) name);
-//                user.setAge((Integer) age);
-//            }
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
-//        return user;
-//    }
 }

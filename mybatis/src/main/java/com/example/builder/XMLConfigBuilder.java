@@ -3,16 +3,14 @@ package com.example.builder;
 import com.example.bind.SqlCommandType;
 import com.example.mapping.MappedStatement;
 import com.example.session.Configuration;
-import com.example.transaction.TransactionFactory;
+import com.example.util.StringUtil;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
-import javax.sql.DataSource;
 import java.io.File;
 import java.util.List;
-import java.util.Properties;
 
 public class XMLConfigBuilder {
     private Configuration configuration;
@@ -33,21 +31,37 @@ public class XMLConfigBuilder {
 
     public Configuration parse() {
         try {
-            // 解析映射器
-            mapperElement();
+            // 解析每一个mapper
+            List<Element> mapperList = root.elements();
+            for (Element element : mapperList) {
+                String text = element.getText();
+                System.out.println("text=" + text);
+                SAXReader saxReader = new SAXReader();
+                try {
+                    // 解析每一个xml文件
+                    File file = new File(text);
+                    Document document = saxReader.read(file);
+                    root = document.getRootElement();
+                    // 解析映射器
+                    mapperElement(root);
+                } catch (DocumentException e) {
+                    e.printStackTrace();
+                }
+            }
+
         } catch (Exception e) {
             throw new RuntimeException("Error parsing SQL Mapper Configuration. Cause: " + e, e);
         }
         return configuration;
     }
 
-    private void mapperElement() throws Exception {
-        List<Element> mapperList = root.elements();
-        String namespace = mapperList.get(0).attributeValue("namespace");
-        for (Element sqlitem : mapperList) {
+    private void mapperElement(Element head) throws Exception {
+        List<Element> mapperList = head.elements();
+        String namespace = head.attributeValue("namespace");
+        for (Element book : mapperList) {
             // mapper节点子元素
-            List<Element> books = sqlitem.elements();
-            for (Element book : books) {
+//            List<Element> books = sqlitem.elements();
+//            for (Element book : books) {
                 String id = book.attributeValue("id");
                 String parameterType = book.attributeValue("parameterType");
                 String resultType = book.attributeValue("resultType");
@@ -58,15 +72,20 @@ public class XMLConfigBuilder {
                 // 添加解析 SQL
                 MappedStatement mappedStatements = new MappedStatement();
                 mappedStatements.setId(namespace + "." + id);
-                mappedStatements.setParameterType(parameterType);
-                mappedStatements.setResultType(resultType);
+                Class<?> pClass = Class.forName(parameterType);
+                mappedStatements.setParameterType(pClass);
+                Class<?> aClass = Class.forName(resultType);
+                mappedStatements.setResultType(aClass.newInstance());
                 mappedStatements.setSql(text);
                 mappedStatements.setSqlCommandType(SqlCommandType.SELECT);
                 configuration.addMappedStatement(mappedStatements);
-            }
+//            }
         }
-        // 注册Mapper映射器
-        configuration.addMapper(Class.forName(namespace));
+        if (StringUtil.isNotEmpty(namespace)) {
+            // 注册Mapper映射器
+            configuration.addMapper(Class.forName(namespace));
+        }
+
     }
 
 
