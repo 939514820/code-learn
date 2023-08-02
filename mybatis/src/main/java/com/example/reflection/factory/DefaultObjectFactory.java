@@ -13,10 +13,11 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.example.factory;
+package com.example.reflection.factory;
 
 
 import com.example.exceptions.ReflectionException;
+import com.example.reflection.Reflector;
 
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
@@ -51,10 +52,10 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
         try {
           return constructor.newInstance();
         } catch (IllegalAccessException e) {
-//          if (Reflector.canControlMemberAccessible()) {
-//            constructor.setAccessible(true);
-//            return constructor.newInstance();
-//          }
+          if (Reflector.canControlMemberAccessible()) {
+            constructor.setAccessible(true);
+            return constructor.newInstance();
+          }
           throw e;
         }
       }
@@ -62,10 +63,10 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
       try {
         return constructor.newInstance(constructorArgs.toArray(new Object[0]));
       } catch (IllegalAccessException e) {
-//        if (Reflector.canControlMemberAccessible()) {
-//          constructor.setAccessible(true);
-//          return constructor.newInstance(constructorArgs.toArray(new Object[0]));
-//        }
+        if (Reflector.canControlMemberAccessible()) {
+          constructor.setAccessible(true);
+          return constructor.newInstance(constructorArgs.toArray(new Object[0]));
+        }
         throw e;
       }
     } catch (Exception e) {

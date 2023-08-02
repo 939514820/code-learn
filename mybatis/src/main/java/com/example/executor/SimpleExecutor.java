@@ -16,18 +16,22 @@
 package com.example.executor;
 
 import com.example.datasource.Connector;
+import com.example.datasource.UnpooledDataSource;
+import com.example.datasource.UnpooledDataSourceFactory;
 import com.example.mapping.MappedStatement;
 import com.example.session.Configuration;
 import com.example.session.RowBounds;
 import com.example.transaction.Transaction;
 import com.example.type.JdbcType;
 import lombok.extern.slf4j.Slf4j;
-import sun.plugin2.main.server.ResultHandler;
+import org.apache.commons.logging.Log;
 
+import javax.sql.DataSource;
 import java.lang.reflect.Method;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
 @Slf4j
 /**
  * @author Clinton Begin
@@ -56,19 +60,26 @@ public class SimpleExecutor extends BaseExecutor {
     }
 
     @Override
-    public <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler) throws SQLException {
+    public <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds) throws SQLException {
         Statement stmt = null;
         try {
             // 获取数据源的连接
-            Connector connector = new Connector();
-            PreparedStatement statement = connector.getConnection().prepareStatement(ms.getSql());
+
+//            Connector connector = new Connector();
+//            Connection connection = connector.getConnection();
+            Log statementLog = null;
+            UnpooledDataSourceFactory unpooledDataSource=new UnpooledDataSourceFactory();
+            DataSource dataSource = unpooledDataSource.getDataSource();
+            Connection connection = dataSource.getConnection();
+            PreparedStatement statement = connection.prepareStatement(ms.getSql());
             ResultSet resultSet = statement.executeQuery();
             // handler抽象出来去处理
-            return  resultSet2Obj(resultSet, ms.getResultType().getClass());
-        }
-        finally {
+            return resultSet2Obj(resultSet, ms.getResultType().getClass());
+        } finally {
             closeStatement(stmt);
         }
+
+
     }
 
 

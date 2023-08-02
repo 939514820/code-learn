@@ -16,19 +16,18 @@
 package com.example.executor;
 
 import com.example.mapping.MappedStatement;
-import com.example.session.BoundSql;
 import com.example.session.Configuration;
-import com.example.session.RowBounds;
+import com.example.transaction.JdbcTransaction;
 import com.example.transaction.Transaction;
+import com.example.transaction.TransactionFactory;
+import com.example.transaction.jdbc.JdbcTransactionFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import sun.plugin2.main.server.ResultHandler;
 
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
 
 
 /**
@@ -140,6 +139,9 @@ public abstract class BaseExecutor implements Executor {
   }
 
   protected Connection getConnection(Log statementLog) throws SQLException {
+    TransactionFactory transactionFactory = new JdbcTransactionFactory();
+//    transactionFactory.newTransaction()
+//    transaction=new JdbcTransaction();
     return transaction.getConnection();
   }
 

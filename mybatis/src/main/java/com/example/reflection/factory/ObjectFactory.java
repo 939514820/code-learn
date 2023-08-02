@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.example.factory;
+package com.example.reflection.factory;
 
 import java.util.List;
 import java.util.Properties;

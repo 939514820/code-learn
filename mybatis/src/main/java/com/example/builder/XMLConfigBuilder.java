@@ -1,6 +1,7 @@
 package com.example.builder;
 
 import com.example.bind.SqlCommandType;
+import com.example.datasource.DataSourceFactory;
 import com.example.mapping.MappedStatement;
 import com.example.session.Configuration;
 import com.example.util.StringUtil;
@@ -10,13 +11,15 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 import java.io.File;
+import java.io.Reader;
 import java.util.List;
+import java.util.Properties;
 
 public class XMLConfigBuilder {
     private Configuration configuration;
     private Element root;
 
-    public XMLConfigBuilder(File file) {
+    public XMLConfigBuilder(Reader file) {
         // 1. 调用父类初始化Configuration
         configuration = new Configuration();
         // 2. dom4j 处理 xml
@@ -31,8 +34,9 @@ public class XMLConfigBuilder {
 
     public Configuration parse() {
         try {
+
             // 解析每一个mapper
-            List<Element> mapperList = root.elements();
+            List<Element> mapperList = root.element("mappers").elements();
             for (Element element : mapperList) {
                 String text = element.getText();
                 System.out.println("text=" + text);
@@ -88,5 +92,14 @@ public class XMLConfigBuilder {
 
     }
 
-
+    private DataSourceFactory dataSourceElement(XNode context) throws Exception {
+        if (context != null) {
+            String type = context.getStringAttribute("type");
+            Properties props = context.getChildrenAsProperties();
+            DataSourceFactory factory = (DataSourceFactory) resolveClass(type).getDeclaredConstructor().newInstance();
+            factory.setProperties(props);
+            return factory;
+        }
+        throw new BuilderException("Environment declaration requires a DataSourceFactory.");
+    }
 }

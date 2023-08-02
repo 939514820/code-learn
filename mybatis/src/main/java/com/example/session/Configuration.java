@@ -1,6 +1,9 @@
 package com.example.session;
 
 import com.example.bind.MapperRegistry;
+import com.example.bind.TypeAliasRegistry;
+import com.example.datasource.UnpooledDataSourceFactory;
+import com.example.datasource.pooled.PooledDataSourceFactory;
 import com.example.executor.Executor;
 import com.example.executor.SimpleExecutor;
 import com.example.mapping.MappedStatement;
@@ -16,6 +19,13 @@ public class Configuration {
     protected final MapperRegistry mapperRegistry = new MapperRegistry(this);
 
     protected final Map<String, MappedStatement> mappedStatements = new HashMap<>();
+    // 类型别名注册机
+    protected final TypeAliasRegistry typeAliasRegistry = new TypeAliasRegistry();
+
+    public Configuration() {
+        typeAliasRegistry.registerAlias("UNPOOLED", UnpooledDataSourceFactory.class);
+        typeAliasRegistry.registerAlias("POOLED", PooledDataSourceFactory.class);
+    }
 
 
     public boolean hasStatement(String statementId) {

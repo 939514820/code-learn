@@ -8,7 +8,6 @@ import com.example.reflection.ParamNameResolver;
 import com.example.session.Configuration;
 import com.example.session.RowBounds;
 import com.example.session.SqlSession;
-import com.mysql.cj.exceptions.ExceptionFactory;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
@@ -74,7 +73,7 @@ public class DefaultSqlSession implements SqlSession {
     public <E> List<E> selectList(String statement, Object parameter) {
         MappedStatement ms = configuration.getMappedStatement(statement);
         try {
-            return executor.query(ms, wrapCollection(parameter), RowBounds.DEFAULT, Executor.NO_RESULT_HANDLER);
+            return executor.query(ms, wrapCollection(parameter), RowBounds.DEFAULT);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

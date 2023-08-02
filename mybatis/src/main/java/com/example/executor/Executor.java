@@ -18,7 +18,6 @@ package com.example.executor;
 import com.example.mapping.MappedStatement;
 import com.example.session.RowBounds;
 import com.example.transaction.Transaction;
-import sun.plugin2.main.server.ResultHandler;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -28,11 +27,11 @@ import java.util.List;
  */
 public interface Executor {
 
-  ResultHandler NO_RESULT_HANDLER = null;
+//  ResultHandler NO_RESULT_HANDLER = null;
 
   int update(MappedStatement ms, Object parameter) throws SQLException;
 
-  <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler)
+  <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds)
       throws SQLException;
 
   void commit(boolean required) throws SQLException;

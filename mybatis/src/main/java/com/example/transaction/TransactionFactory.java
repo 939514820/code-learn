@@ -4,23 +4,46 @@ import com.example.transaction.enums.TransactionIsolationLevel;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.util.Properties;
 
 public interface TransactionFactory {
 
+
     /**
-     * 根据 Connection 创建 Transaction
-     * @param conn Existing database connection
+     * Sets transaction factory custom properties.
+     *
+     * @param props
+     *          the new properties
+     */
+    default void setProperties(Properties props) {
+        // NOP
+    }
+
+    /**
+     * Creates a {@link Transaction} out of an existing connection.
+     *
+     * @param conn
+     *          Existing database connection
+     *
      * @return Transaction
+     *
+     * @since 3.1.0
      */
     Transaction newTransaction(Connection conn);
 
     /**
-     * 根据数据源和事务隔离级别创建 Transaction
-     * @param dataSource DataSource to take the connection from
-     * @param level Desired isolation level
-     * @param autoCommit Desired autocommit
+     * Creates a {@link Transaction} out of a datasource.
+     *
+     * @param dataSource
+     *          DataSource to take the connection from
+     * @param level
+     *          Desired isolation level
+     * @param autoCommit
+     *          Desired autocommit
+     *
      * @return Transaction
+     *
+     * @since 3.1.0
      */
     Transaction newTransaction(DataSource dataSource, TransactionIsolationLevel level, boolean autoCommit);
-
 }
