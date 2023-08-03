@@ -1,7 +1,0 @@
-<mapper namespace="com.example.dao.IUserDao">
-    <select id="queryUserInfoById" parameterType="java.lang.Long" resultType="com.example.dao.User">
-        SELECT *
-        FROM user
-        where id = 1
-    </select>
-</mapper>
