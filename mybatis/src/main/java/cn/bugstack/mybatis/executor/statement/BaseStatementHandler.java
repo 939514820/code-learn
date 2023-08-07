@@ -1,6 +1,7 @@
 package cn.bugstack.mybatis.executor.statement;
 
 import cn.bugstack.mybatis.executor.Executor;
+import cn.bugstack.mybatis.executor.parameter.ParameterHandler;
 import cn.bugstack.mybatis.executor.resultset.ResultSetHandler;
 import cn.bugstack.mybatis.mapping.BoundSql;
 import cn.bugstack.mybatis.mapping.MappedStatement;
@@ -18,13 +19,13 @@ import java.sql.Statement;
  * @copyright 公众号：bugstack虫洞栈 | 博客：https://bugstack.cn - 沉淀、分享、成长，让自己和他人都能有所收获！
  */
 public abstract class BaseStatementHandler implements StatementHandler {
-
     protected final Configuration configuration;
     protected final Executor executor;
     protected final MappedStatement mappedStatement;
 
     protected final Object parameterObject;
     protected final ResultSetHandler resultSetHandler;
+    protected final ParameterHandler parameterHandler;
 
     protected BoundSql boundSql;
 
@@ -35,6 +36,7 @@ public abstract class BaseStatementHandler implements StatementHandler {
         this.boundSql = boundSql;
 
         this.parameterObject = parameterObject;
+        this.parameterHandler = configuration.newParameterHandler(mappedStatement, parameterObject, boundSql);
         this.resultSetHandler = configuration.newResultSetHandler(executor, mappedStatement, boundSql);
     }
 

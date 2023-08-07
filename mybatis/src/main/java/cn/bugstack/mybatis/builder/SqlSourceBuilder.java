@@ -4,8 +4,12 @@ import cn.bugstack.mybatis.mapping.ParameterMapping;
 import cn.bugstack.mybatis.mapping.SqlSource;
 import cn.bugstack.mybatis.parsing.GenericTokenParser;
 import cn.bugstack.mybatis.parsing.TokenHandler;
+import cn.bugstack.mybatis.reflection.MetaClass;
 import cn.bugstack.mybatis.reflection.MetaObject;
 import cn.bugstack.mybatis.session.Configuration;
+import cn.bugstack.mybatis.type.JdbcType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +22,8 @@ import java.util.Map;
  * @Copyright 公众号：bugstack虫洞栈 | 博客：https://bugstack.cn - 沉淀、分享、成长，让自己和他人都能有所收获！
  */
 public class SqlSourceBuilder extends BaseBuilder {
+
+    private static Logger logger = LoggerFactory.getLogger(SqlSourceBuilder.class);
 
     private static final String parameterProperties = "javaType,jdbcType,mode,numericScale,resultMap,typeHandler,jdbcTypeName";
 
@@ -43,6 +49,7 @@ public class SqlSourceBuilder extends BaseBuilder {
             super(configuration);
             this.parameterType = parameterType;
             this.metaParameters = configuration.newMetaObject(additionalParameters);
+
         }
 
         public List<ParameterMapping> getParameterMappings() {
@@ -60,11 +67,25 @@ public class SqlSourceBuilder extends BaseBuilder {
             // 先解析参数映射,就是转化成一个 HashMap | #{favouriteSection,jdbcType=VARCHAR}
             Map<String, String> propertiesMap = new ParameterExpression(content);
             String property = propertiesMap.get("property");
-            Class<?> propertyType = parameterType;
-            ParameterMapping.Builder builder = new ParameterMapping.Builder(configuration, property, propertyType);
+            Class<?> propertyType;
+            if (typeHandlerRegistry.hasTypeHandler(parameterType)) {
+                propertyType = parameterType;
+            } else if (property != null) {
+                MetaClass metaClass = MetaClass.forClass(parameterType);
+                if (metaClass.hasGetter(property)) {
+                    propertyType = metaClass.getGetterType(property);
+                } else {
+                    propertyType = Object.class;
+                }
+            } else {
+                propertyType = Object.class;
+            }
+
+            logger.info("构建参数映射 property：{} propertyType：{}", property, propertyType);
+            ParameterMapping.Builder builder = new ParameterMapping.Builder(configuration, property, propertyType)
+                  ;
             return builder.build();
         }
 
     }
-
 }

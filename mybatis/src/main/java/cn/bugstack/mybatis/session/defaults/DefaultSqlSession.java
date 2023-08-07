@@ -1,6 +1,7 @@
 package cn.bugstack.mybatis.session.defaults;
 
 import cn.bugstack.mybatis.executor.Executor;
+import cn.bugstack.mybatis.mapping.BoundSql;
 import cn.bugstack.mybatis.mapping.MappedStatement;
 import cn.bugstack.mybatis.session.Configuration;
 import cn.bugstack.mybatis.session.SqlSession;
@@ -31,7 +32,9 @@ public class DefaultSqlSession implements SqlSession {
     @Override
     public <T> T selectOne(String statement, Object parameter) {
         MappedStatement ms = configuration.getMappedStatement(statement);
-        List<T> list = executor.query(ms, parameter, Executor.NO_RESULT_HANDLER, ms.getSqlSource().getBoundSql(parameter));
+        BoundSql boundSql = ms.getSqlSource().getBoundSql(parameter);
+
+        List<T> list = executor.query(ms, parameter, Executor.NO_RESULT_HANDLER, boundSql);
         return list.get(0);
     }
 

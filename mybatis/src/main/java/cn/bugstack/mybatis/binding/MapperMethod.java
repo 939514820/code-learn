@@ -19,8 +19,10 @@ public class MapperMethod {
 
     private final SqlCommand command;
     private final MethodSignature method;
+
     public MapperMethod(Class<?> mapperInterface, Method method, Configuration configuration) {
         this.command = new SqlCommand(configuration, mapperInterface, method);
+        this.method = new MethodSignature(configuration, method);
     }
 
     public Object execute(SqlSession sqlSession, Object[] args) {
@@ -65,6 +67,7 @@ public class MapperMethod {
             return type;
         }
     }
+
     /**
      * 方法签名
      */

@@ -5,8 +5,8 @@
         where id = #{id}
     </select>
     <select id="queryUserInfo" parameterType="com.example.dao.User" resultType="com.example.dao.User">
-        SELECT id, userId, userName, userHead
+        SELECT id, name,age
         FROM user
-        where id = #{id} and userId = #{userId}
+        where id = #{id} and age = #{age}
     </select>
 </mapper>

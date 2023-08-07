@@ -27,9 +27,14 @@ public class Main {
         IUserDao userDao = sqlSession.getMapper(IUserDao.class);
 
         // 4. 测试验证
-        User res = userDao.queryUserInfoById(1L);
+//        User res = userDao.queryUserInfoById(1L);
+        User user = new User();
+        user.setId(1);
+        user.setAge(111);
+        User res1 = userDao.queryUserInfo(user);
 
-        log.info("测试结果：{}", res);
+//        log.info("测试结果：{}", res);
+        log.info("测试结果：{}", res1);
         System.out.println("=============");
     }
 

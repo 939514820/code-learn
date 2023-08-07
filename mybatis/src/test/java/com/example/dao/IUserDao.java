@@ -4,6 +4,6 @@ public interface IUserDao {
 
     User queryUserInfoById(Long id);
 
-    User queryUserInfoById(User user);
+    User queryUserInfo(User user);
 
 }
