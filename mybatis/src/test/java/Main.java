@@ -29,12 +29,15 @@ public class Main {
         // 4. 测试验证
 //        User res = userDao.queryUserInfoById(1L);
         User user = new User();
-        user.setId(1);
+        user.setId(2);
         user.setAge(111);
-        User res1 = userDao.queryUserInfo(user);
+        user.setName("zhangsan");
+        int res1 = userDao.insert(user);
+//        Integer res2 = userDao.queryUserInfo1(user);
 
 //        log.info("测试结果：{}", res);
         log.info("测试结果：{}", res1);
+//        log.info("测试结果：{}", res2);
         System.out.println("=============");
     }
 

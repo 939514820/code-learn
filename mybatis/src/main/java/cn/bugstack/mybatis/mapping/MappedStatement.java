@@ -3,6 +3,7 @@ package cn.bugstack.mybatis.mapping;
 import cn.bugstack.mybatis.scripting.LanguageDriver;
 import cn.bugstack.mybatis.session.Configuration;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,11 +20,17 @@ public class MappedStatement {
     private SqlSource sqlSource;
     Class<?> resultType;
     private LanguageDriver lang;
-
+    private List<ResultMap> resultMaps;
     MappedStatement() {
         // constructor disabled
     }
-
+    /**
+     * step-11 新增方法
+     */
+    public BoundSql getBoundSql(Object parameterObject) {
+        // 调用 SqlSource#getBoundSql
+        return sqlSource.getBoundSql(parameterObject);
+    }
     /**
      * 建造者
      */
@@ -45,6 +52,16 @@ public class MappedStatement {
             assert mappedStatement.id != null;
             return mappedStatement;
         }
+
+        public String id() {
+            return mappedStatement.id;
+        }
+
+        public Builder resultMaps(List<ResultMap> resultMaps) {
+            mappedStatement.resultMaps = resultMaps;
+            return this;
+        }
+
 
     }
 
@@ -71,5 +88,7 @@ public class MappedStatement {
     public LanguageDriver getLang() {
         return lang;
     }
-
+    public List<ResultMap> getResultMaps() {
+        return resultMaps;
+    }
 }

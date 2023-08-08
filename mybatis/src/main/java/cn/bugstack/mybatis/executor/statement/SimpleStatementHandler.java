@@ -4,8 +4,10 @@ import cn.bugstack.mybatis.executor.Executor;
 import cn.bugstack.mybatis.mapping.BoundSql;
 import cn.bugstack.mybatis.mapping.MappedStatement;
 import cn.bugstack.mybatis.session.ResultHandler;
+import cn.bugstack.mybatis.session.RowBounds;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
@@ -18,8 +20,9 @@ import java.util.List;
  */
 public class SimpleStatementHandler extends BaseStatementHandler {
 
-    public SimpleStatementHandler(Executor executor, MappedStatement mappedStatement, Object parameterObject, ResultHandler resultHandler, BoundSql boundSql) {
-        super(executor, mappedStatement, parameterObject, resultHandler, boundSql);
+    public SimpleStatementHandler(Executor executor, MappedStatement mappedStatement, Object parameterObject,
+                                  RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
+        super(executor, mappedStatement, parameterObject, rowBounds,  resultHandler, boundSql);
     }
 
     @Override
@@ -37,6 +40,13 @@ public class SimpleStatementHandler extends BaseStatementHandler {
         String sql = boundSql.getSql();
         statement.execute(sql);
         return resultSetHandler.handleResultSets(statement);
+    }
+
+    @Override
+    public int update(Statement  statement) throws SQLException {
+        String sql = boundSql.getSql();
+        statement.execute(sql);
+        return statement.getUpdateCount();
     }
 
 }
