@@ -7,6 +7,7 @@ import cn.bugstack.mybatis.mapping.BoundSql;
 import cn.bugstack.mybatis.mapping.Environment;
 import cn.bugstack.mybatis.mapping.MappedStatement;
 import cn.bugstack.mybatis.mapping.SqlCommandType;
+import cn.bugstack.mybatis.plugin.Interceptor;
 import cn.bugstack.mybatis.session.Configuration;
 import cn.bugstack.mybatis.transaction.TransactionFactory;
 import org.dom4j.Document;
@@ -52,6 +53,8 @@ public class XMLConfigBuilder extends BaseBuilder {
      */
     public Configuration parse() {
         try {
+            // 插件 step-16 添加
+            pluginElement(root.element("plugins"));
             // 环境
             environmentsElement(root.element("environments"));
             // 解析映射器
@@ -60,6 +63,24 @@ public class XMLConfigBuilder extends BaseBuilder {
             throw new RuntimeException("Error parsing SQL Mapper Configuration. Cause: " + e, e);
         }
         return configuration;
+    }
+
+    private void pluginElement(Element parent) throws InstantiationException, IllegalAccessException {
+        if (parent == null) {return;}
+        List<Element> plugin = parent.elements();
+        for (Element element : plugin) {
+            String interceptor = element.attributeValue("interceptor");
+// 参数配置
+            Properties properties = new Properties();
+            List<Element> propertyElementList = element.elements("property");
+            for (Element property : propertyElementList) {
+                properties.setProperty(property.attributeValue("name"), property.attributeValue("value"));
+            }
+            // 获取插件实现类并实例化：cn.bugstack.mybatis.test.plugin.TestPlugin
+            Interceptor interceptorInstance = (Interceptor) resolveClass(interceptor).newInstance();
+            interceptorInstance.setProperties(properties);
+            configuration.addInterceptor(interceptorInstance);
+        }
     }
 
     /**

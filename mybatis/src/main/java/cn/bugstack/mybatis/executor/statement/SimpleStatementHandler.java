@@ -48,5 +48,8 @@ public class SimpleStatementHandler extends BaseStatementHandler {
         statement.execute(sql);
         return statement.getUpdateCount();
     }
-
+    @Override
+    public BoundSql getBoundSql() {
+        return boundSql;
+    }
 }

@@ -15,6 +15,8 @@ import cn.bugstack.mybatis.executor.statement.StatementHandler;
 import cn.bugstack.mybatis.mapping.BoundSql;
 import cn.bugstack.mybatis.mapping.Environment;
 import cn.bugstack.mybatis.mapping.MappedStatement;
+import cn.bugstack.mybatis.plugin.Interceptor;
+import cn.bugstack.mybatis.plugin.InterceptorChain;
 import cn.bugstack.mybatis.reflection.MetaObject;
 import cn.bugstack.mybatis.reflection.factory.DefaultObjectFactory;
 import cn.bugstack.mybatis.reflection.factory.ObjectFactory;
@@ -64,7 +66,8 @@ public class Configuration {
     protected final Set<String> loadedResources = new HashSet<>();
 
     protected String databaseId;
-
+    // 插件拦截器链
+    protected final InterceptorChain interceptorChain = new InterceptorChain();
     public Configuration() {
         typeAliasRegistry.registerAlias("JDBC", JdbcTransactionFactory.class);
 
@@ -132,9 +135,7 @@ public class Configuration {
     /**
      * 创建语句处理器
      */
-    public StatementHandler newStatementHandler(Executor executor, MappedStatement mappedStatement, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
-        return new PreparedStatementHandler(executor, mappedStatement, parameter, rowBounds, resultHandler, boundSql);
-    }
+
 
     // 创建元对象
     public MetaObject newMetaObject(Object object) {
@@ -158,6 +159,22 @@ public class Configuration {
         return languageRegistry;
     }
 
+    public StatementHandler newStatementHandler(Executor executor, MappedStatement mappedStatement, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
+        // 创建语句处理器，Mybatis 这里加了路由 STATEMENT、PREPARED、CALLABLE 我们默认只根据预处理进行实例化
+        StatementHandler statementHandler = new PreparedStatementHandler(executor, mappedStatement, parameter, rowBounds, resultHandler, boundSql);
+        // 嵌入插件，代理对象
+        statementHandler = (StatementHandler) interceptorChain.pluginAll(statementHandler);
+        return statementHandler;
+    }
+    public LanguageDriver getDefaultScriptingLanguageInstance() {
+        return languageRegistry.getDefaultDriver();
+    }
+    public ObjectFactory getObjectFactory() {
+        return objectFactory;
+    }
+    public void addInterceptor(Interceptor interceptorInstance) {
+        interceptorChain.addInterceptor(interceptorInstance);
+    }
     public ParameterHandler newParameterHandler(MappedStatement mappedStatement, Object parameterObject, BoundSql boundSql) {
         // 创建参数处理器
         ParameterHandler parameterHandler = mappedStatement.getLang().createParameterHandler(mappedStatement, parameterObject, boundSql);
@@ -165,10 +182,4 @@ public class Configuration {
         return parameterHandler;
     }
 
-    public LanguageDriver getDefaultScriptingLanguageInstance() {
-        return languageRegistry.getDefaultDriver();
-    }
-    public ObjectFactory getObjectFactory() {
-        return objectFactory;
-    }
 }

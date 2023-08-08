@@ -49,5 +49,10 @@ public class PreparedStatementHandler extends BaseStatementHandler {
         return ps.getUpdateCount();
     }
 
+    @Override
+    public BoundSql getBoundSql() {
+        return boundSql;
+    }
+
 
 }

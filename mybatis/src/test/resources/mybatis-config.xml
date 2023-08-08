@@ -1,5 +1,10 @@
 <config>
-
+    <plugins>
+        <plugin interceptor="com.example.plugin.TestPlugin">
+            <property name="test00" value="100"/>
+            <property name="test01" value="200"/>
+        </plugin>
+    </plugins>
     <environments default="development">
         <environment id="development">
             <transactionManager type="JDBC"/>

@@ -8,6 +8,7 @@ import cn.bugstack.mybatis.mapping.MappedStatement;
 import cn.bugstack.mybatis.session.Configuration;
 import cn.bugstack.mybatis.session.ResultHandler;
 import cn.bugstack.mybatis.session.RowBounds;
+import org.springframework.cache.interceptor.KeyGenerator;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -28,18 +29,22 @@ public abstract class BaseStatementHandler implements StatementHandler {
     protected final ResultSetHandler resultSetHandler;
     protected final ParameterHandler parameterHandler;
 
+    protected final RowBounds rowBounds;
     protected BoundSql boundSql;
-    protected RowBounds rowBounds;
 
     public BaseStatementHandler(Executor executor, MappedStatement mappedStatement, Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
-        // 新增判断，因为 update 不会传入 boundSql 参数，所以这里要做初始化处理
-        if (boundSql == null) {
-            boundSql = mappedStatement.getBoundSql(parameterObject);
-        }
         this.configuration = mappedStatement.getConfiguration();
         this.executor = executor;
         this.mappedStatement = mappedStatement;
         this.rowBounds = rowBounds;
+
+        // step-11 新增判断，因为 update 不会传入 boundSql 参数，所以这里要做初始化处理
+        // step-14 添加 generateKeys
+        if (boundSql == null) {
+            generateKeys(parameterObject);
+            boundSql = mappedStatement.getBoundSql(parameterObject);
+        }
+
         this.boundSql = boundSql;
 
         this.parameterObject = parameterObject;
@@ -62,6 +67,16 @@ public abstract class BaseStatementHandler implements StatementHandler {
         }
     }
 
+    @Override
+    public BoundSql getBoundSql() {
+        return boundSql;
+    }
+
     protected abstract Statement instantiateStatement(Connection connection) throws SQLException;
+
+    protected void generateKeys(Object parameter) {
+//        KeyGenerator keyGenerator = mappedStatement.getKeyGenerator();
+//        keyGenerator.processBefore(executor, mappedStatement, null, parameter);
+    }
 
 }
