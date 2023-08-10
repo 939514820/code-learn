@@ -38,7 +38,7 @@ public class Plugin implements InvocationHandler {
         return method.invoke(target, args);
     }
 
-    /**
+    /** 为target生成代理类
      * 用代理把自定义插件行为包裹到目标方法中，也就是 Plugin.invoke 的过滤调用
      */
     public static Object wrap(Object target, Interceptor interceptor) {
