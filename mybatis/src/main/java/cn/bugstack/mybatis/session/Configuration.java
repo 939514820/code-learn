@@ -123,7 +123,9 @@ public class Configuration {
      * 创建结果集处理器
      */
     public ResultSetHandler newResultSetHandler(Executor executor, MappedStatement mappedStatement, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
-        return new DefaultResultSetHandler(executor, mappedStatement, resultHandler, rowBounds, boundSql);
+        ResultSetHandler handler = new DefaultResultSetHandler(executor, mappedStatement, resultHandler, rowBounds, boundSql);
+        handler = (ResultSetHandler) interceptorChain.pluginAll(handler);
+        return handler;
     }
 
     /**
@@ -187,7 +189,7 @@ public class Configuration {
         // 创建参数处理器
         ParameterHandler parameterHandler = mappedStatement.getLang().createParameterHandler(mappedStatement, parameterObject, boundSql);
         // 插件的一些参数，也是在这里处理，暂时不添加这部分内容
-        parameterHandler = (ParameterHandler)interceptorChain.pluginAll(parameterHandler);
+        parameterHandler = (ParameterHandler) interceptorChain.pluginAll(parameterHandler);
         return parameterHandler;
     }
 
