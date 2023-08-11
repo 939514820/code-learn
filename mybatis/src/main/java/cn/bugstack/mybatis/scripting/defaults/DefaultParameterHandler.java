@@ -67,7 +67,7 @@ public class DefaultParameterHandler implements ParameterHandler {
                 JdbcType jdbcType = parameterMapping.getJdbcType();
 
                 // 设置参数
-                logger.info("根据每个ParameterMapping中的TypeHandler设置对应的参数信息 value：{}", JSON.toJSONString(value));
+//                logger.info("根据每个ParameterMapping中的TypeHandler设置对应的参数信息 value：{}", JSON.toJSONString(value));
                 TypeHandler typeHandler = parameterMapping.getTypeHandler();
                 typeHandler.setParameter(ps, i + 1, value, jdbcType);
             }

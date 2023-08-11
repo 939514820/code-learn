@@ -81,7 +81,7 @@ public class SqlSourceBuilder extends BaseBuilder {
                 propertyType = Object.class;
             }
 
-            logger.info("构建参数映射 property：{} propertyType：{}", property, propertyType);
+//            logger.info("构建参数映射 property：{} propertyType：{}", property, propertyType);
             ParameterMapping.Builder builder = new ParameterMapping.Builder(configuration, property, propertyType)
                   ;
             return builder.build();

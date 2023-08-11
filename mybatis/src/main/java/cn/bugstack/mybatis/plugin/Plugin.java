@@ -42,7 +42,7 @@ public class Plugin implements InvocationHandler {
      * 用代理把自定义插件行为包裹到目标方法中，也就是 Plugin.invoke 的过滤调用
      */
     public static Object wrap(Object target, Interceptor interceptor) {
-        // 取得签名Map
+        // 取得签名方法的Map
         Map<Class<?>, Set<Method>> signatureMap = getSignatureMap(interceptor);
         // 取得要改变行为的类(ParameterHandler|ResultSetHandler|StatementHandler|Executor)，目前只添加了 StatementHandler
         Class<?> type = target.getClass();

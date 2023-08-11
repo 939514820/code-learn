@@ -68,6 +68,7 @@ public class Configuration {
     protected String databaseId;
     // 插件拦截器链
     protected final InterceptorChain interceptorChain = new InterceptorChain();
+
     public Configuration() {
         typeAliasRegistry.registerAlias("JDBC", JdbcTransactionFactory.class);
 
@@ -129,7 +130,10 @@ public class Configuration {
      * 生产执行器
      */
     public Executor newExecutor(Transaction transaction) {
-        return new SimpleExecutor(this, transaction);
+        Executor executor = new SimpleExecutor(this, transaction);
+        // 嵌入插件生成代理对象
+        executor = (Executor) interceptorChain.pluginAll(executor);
+        return executor;
     }
 
     /**
@@ -166,19 +170,24 @@ public class Configuration {
         statementHandler = (StatementHandler) interceptorChain.pluginAll(statementHandler);
         return statementHandler;
     }
+
     public LanguageDriver getDefaultScriptingLanguageInstance() {
         return languageRegistry.getDefaultDriver();
     }
+
     public ObjectFactory getObjectFactory() {
         return objectFactory;
     }
+
     public void addInterceptor(Interceptor interceptorInstance) {
         interceptorChain.addInterceptor(interceptorInstance);
     }
+
     public ParameterHandler newParameterHandler(MappedStatement mappedStatement, Object parameterObject, BoundSql boundSql) {
         // 创建参数处理器
         ParameterHandler parameterHandler = mappedStatement.getLang().createParameterHandler(mappedStatement, parameterObject, boundSql);
-        // 插件的一些参数，也是在这里处理，暂时不添加这部分内容 interceptorChain.pluginAll(parameterHandler);
+        // 插件的一些参数，也是在这里处理，暂时不添加这部分内容
+        parameterHandler = (ParameterHandler)interceptorChain.pluginAll(parameterHandler);
         return parameterHandler;
     }
 

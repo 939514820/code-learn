@@ -14,8 +14,7 @@
         FROM user
         where id = #{id} and age = #{age}
     </select>
-    <insert id="insert" parameterType="com.example.dao.User">INSERT INTO `user`(`id`, `name`, `age`) VALUES (#{id}, #{name}
-        , #{age})
+    <insert id="insert" parameterType="com.example.dao.User">INSERT INTO `user`(`id`, `name`, `age`) VALUES (#{id}, #{name} , #{age})
     </insert>
     <delete id="deleteUserInfoByUserId" parameterType="java.lang.Integer">
         DELETE FROM user WHERE id = #{id}
