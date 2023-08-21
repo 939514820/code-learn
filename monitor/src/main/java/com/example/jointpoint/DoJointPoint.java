@@ -1,4 +1,4 @@
-package com.example;
+package com.example.jointpoint;
 
 import com.example.annotation.DoMonitor;
 import org.aspectj.lang.JoinPoint;

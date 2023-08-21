@@ -1,6 +1,6 @@
 package com.example.config;
 
-import com.example.DoJointPoint;
+import com.example.jointpoint.DoJointPoint;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
