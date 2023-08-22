@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface WhiteList {
-    String value() default "";
+    String key() default "";
 
     String returnJson() default "";
 }

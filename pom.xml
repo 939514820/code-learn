@@ -9,6 +9,7 @@
         <module>spi</module>
         <module>service-provider</module>
         <module>mybatis</module>
+        <module>test01</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
