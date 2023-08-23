@@ -64,10 +64,10 @@ public class WhiteListJointPoint {
         return filedValue;
     }
 
-    private Method getMethod(ProceedingJoinPoint jp) {
+    private Method getMethod(ProceedingJoinPoint jp) throws NoSuchMethodException {
         Signature signature = jp.getSignature();
         MethodSignature methodSignature = (MethodSignature) signature;
-        return methodSignature.getMethod();
+        return jp.getTarget().getClass().getMethod(methodSignature.getName(), methodSignature.getParameterTypes());
     }
 
 
@@ -76,6 +76,6 @@ public class WhiteListJointPoint {
         if (StringUtils.isEmpty(whiteList.returnJson())) {
             return returnType.newInstance();
         }
-        return JSON.parseObject(whiteList.returnJson());
+        return JSON.parseObject(whiteList.returnJson(), method.getReturnType());
     }
 }

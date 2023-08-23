@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.example.annotation.Breaker;
 import com.example.annotation.WhiteList;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
@@ -19,14 +20,21 @@ public class DoBreaker {
     }
 
     @Around("pointCut()&& @annotation(breaker)")
-    public Object doFilter(ProceedingJoinPoint jp, Breaker breaker) {
+    public Object doFilter(ProceedingJoinPoint jp, Breaker breaker) throws Throwable {
         // 计时
         long timeout = breaker.timeout();
         // 执行具体的方法
         // 超时熔断
-        MethodSignature signature = (MethodSignature) jp.getSignature();
-        Method method = signature.getMethod();
-        method.invoke();
+        // 开关是否打开 未开->计数
+        //
+
+        Method method = getMethod(jp);
+        long start = System.currentTimeMillis();
+        jp.proceed();
+        long end = System.currentTimeMillis();
+        if ((end - start) / 1000 > timeout) {
+
+        }
         return defaultObj(breaker, method.getReturnType());
     }
 
@@ -35,5 +43,11 @@ public class DoBreaker {
             return returnType.newInstance();
         }
         return JSON.parseObject(whiteList.returnJson());
+    }
+
+    private Method getMethod(ProceedingJoinPoint jp) throws NoSuchMethodException {
+        Signature signature = jp.getSignature();
+        MethodSignature methodSignature = (MethodSignature) signature;
+        return jp.getTarget().getClass().getMethod(methodSignature.getName(), methodSignature.getParameterTypes());
     }
 }
