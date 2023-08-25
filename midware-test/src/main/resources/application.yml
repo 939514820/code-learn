@@ -1,0 +1,33 @@
+server:
+  port: 8080
+bugstack:
+  whitelist:
+    users: zhangsan,lisi
+
+mybatis:
+  mapper-locations: classpath:/mybatis/mapper/*.xml
+  config-location: classpath:/mybatis/config/mybatis-config.xml
+
+# 路由配置
+router:
+  jdbc:
+    datasource:
+      dbCount: 2
+      tbCount: 4
+      list: db01,db02
+      defaultDB: db01
+      cutinfo:
+        - db: db
+          dbSeparate:
+          table: user
+          tbSeparate: _
+      db01:
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/test01?useUnicode=true
+        username: root
+        password: 123456
+      db02:
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/test02?useUnicode=true
+        username: root
+        password: 123456

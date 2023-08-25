@@ -5,4 +5,7 @@
 5.连接池的实现 
 6.多数据源的配置
 7.插件的实现
-
+https://gitcode.net/KnowledgePlanet/SpringBootStarter/x-pack-sql-jdbc
+dbrouter: 
+    自定义路由规则 
+    数据源切换注解

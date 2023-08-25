@@ -23,7 +23,7 @@
         </dependency>
         <dependency>
             <groupId>com.example</groupId>
-            <artifactId>monitor</artifactId>
+            <artifactId>midware</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
