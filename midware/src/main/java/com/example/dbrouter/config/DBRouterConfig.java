@@ -2,63 +2,15 @@ package com.example.dbrouter.config;
 
 
 import java.util.List;
+import java.util.Map;
 
 public class DBRouterConfig {
-
     private int dbCount;  //分库数
     private int tbCount;  //分表数
-    private List<CutInfo> cutInfos;
     /**
      * 默认db
      */
     private String defaultDB;
-
-    public List<CutInfo> getCutInfos() {
-        return cutInfos;
-    }
-
-    public void setCutInfos(List<CutInfo> cutInfos) {
-        this.cutInfos = cutInfos;
-    }
-
-    public static class CutInfo {
-        private String db;
-        private String dbSeparate;
-        private String table;
-        private String tbSeparate;
-
-        public String getTbSeparate() {
-            return tbSeparate;
-        }
-
-        public void setTbSeparate(String tbSeparate) {
-            this.tbSeparate = tbSeparate;
-        }
-
-        public String getDb() {
-            return db;
-        }
-
-        public void setDb(String db) {
-            this.db = db;
-        }
-
-        public String getDbSeparate() {
-            return dbSeparate;
-        }
-
-        public void setDbSeparate(String dbSeparate) {
-            this.dbSeparate = dbSeparate;
-        }
-
-        public String getTable() {
-            return table;
-        }
-
-        public void setTable(String table) {
-            this.table = table;
-        }
-    }
 
     public DBRouterConfig() {
     }

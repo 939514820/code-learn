@@ -40,8 +40,8 @@ public class DoDbRouterJointPoint {
             int dbIdx = idxSize / dbRouterConfig.getTbCount() + 1;
             int tbIdx = idxSize - dbRouterConfig.getTbCount() * (dbIdx - 1);
             // 设置到 ThreadLocal
-            DBContextHolder.setDBKey(dbRouterConfig.getCutInfos().get(0).getDb() +
-                    dbRouterConfig.getCutInfos().get(0).getDbSeparate() + String.format("%02d", dbIdx));
+            DBContextHolder.setDBKey("db" + String.format("%02d", dbIdx));
+
             DBContextHolder.setTBKey(String.format("%02d", tbIdx));
             return jp.proceed();
         } finally {
@@ -53,9 +53,7 @@ public class DoDbRouterJointPoint {
     }
 
     private Object getAttrValue(String attr, ProceedingJoinPoint jp) {
-//        MethodSignature signature = (MethodSignature) jp.getSignature();
-//        Method method = jp.getTarget().getClass().getMethod(signature.getName(), signature.getParameterTypes());
-//从参数中取指定属性名的值
+        //从参数中取指定属性名的值
         Object[] args = jp.getArgs();
         String filedValue = null;
         for (Object arg : args) {
