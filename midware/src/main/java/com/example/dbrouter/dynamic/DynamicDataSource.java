@@ -6,6 +6,7 @@ import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 
 public class DynamicDataSource extends AbstractRoutingDataSource {
     @Resource
@@ -13,7 +14,8 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
 
     @Override
     protected Object determineCurrentLookupKey() {
-        return (StringUtils.isEmpty(DBContextHolder.getDBKey()) ? dbRouterConfig.getDefaultDB() : DBContextHolder.getDBKey());
+        ArrayList<String> list = new ArrayList(dbRouterConfig.getDbs().keySet());
+        return (StringUtils.isEmpty(DBContextHolder.getDBKey()) ? list.get(0) : DBContextHolder.getDBKey());
     }
 
 }

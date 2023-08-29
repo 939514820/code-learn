@@ -14,10 +14,10 @@ public interface IUserDao {
      @DBRouter(key = "userId")
      void insertUser(User req);
 
-     @DS(key = "db01")
+     @DS(key = "db1")
      User getByUserId(User req);
 
-     @DS(key = "db02")
+     @DS(key = "db2")
      User getByUserId1(User req);
 
 }

@@ -17,7 +17,7 @@ import javax.annotation.Resource;
 @Aspect
 @Component("db-router-point")
 public class DoDbRouterJointPoint {
-    private Logger logger = LoggerFactory.getLogger(DoDbRouterJointPoint.class);
+    private final Logger logger = LoggerFactory.getLogger(DoDbRouterJointPoint.class);
     @Resource
     private DBRouterConfig dbRouterConfig;
 
@@ -30,19 +30,34 @@ public class DoDbRouterJointPoint {
         String key = dbRouter.key();
         // 获取字段值
         // 计算分库，计算分表
+        int dbCount = 0;
+        int tbCount = 0;
+        String dbPre = "";
+        String tbPre = "";
         try {
             Object dbKeyAttr = getAttrValue(key, jp);
-
-            int size = dbRouterConfig.getDbCount() * dbRouterConfig.getTbCount();
+            // TODO 获取当前mappper的db和tb
+            String dbName="db";
+            String tbName="user_";
+            if (dbRouterConfig.getDbs().containsKey(dbName)) {
+                DBRouterConfig.DBInfo user = dbRouterConfig.getDbs().get(dbName);
+                dbCount = user.getCount();
+                dbPre = user.getNamePrefix();
+            }
+            if (dbRouterConfig.getTbs().containsKey(tbName)) {
+                DBRouterConfig.DBInfo user = dbRouterConfig.getTbs().get(tbName);
+                tbCount = user.getCount();
+                tbPre = user.getNamePrefix();
+            }
+            int size = dbCount * tbCount;
             // 扰动函数
             int idxSize = (size - 1) & (dbKeyAttr.hashCode() ^ (dbKeyAttr.hashCode() >>> 16));
             // 库表索引
-            int dbIdx = idxSize / dbRouterConfig.getTbCount() + 1;
-            int tbIdx = idxSize - dbRouterConfig.getTbCount() * (dbIdx - 1);
-            // 设置到 ThreadLocal
-            DBContextHolder.setDBKey("db" + String.format("%02d", dbIdx));
-
-            DBContextHolder.setTBKey(String.format("%02d", tbIdx));
+            int dbIdx = idxSize / tbCount + 1;
+            int tbIdx = idxSize - tbCount * (dbIdx - 1);
+//             设置到 ThreadLocal
+            DBContextHolder.setDBKey(dbPre + dbIdx);
+            DBContextHolder.setTBKey(tbPre + tbIdx);
             return jp.proceed();
         } finally {
             DBContextHolder.clearTBKey();

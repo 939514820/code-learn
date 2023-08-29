@@ -9,7 +9,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -20,13 +19,14 @@ public class DBRouterAutoConfiguration implements EnvironmentAware {
 
     private Map<String, Map<String, Object>> dataSourceMap = new HashMap<>();
 
-    private int dbCount;  //分库数
-    private int tbCount;  //分表数
-    private String defaultDB;
+    private Map<String, DBRouterConfig.DBInfo> dbsMap = new HashMap<>();  //分库数
+    private Map<String, DBRouterConfig.DBInfo> tbsMap = new HashMap<>();  //分表数
 
     @Bean
     public DBRouterConfig dbRouterConfig() {
-        DBRouterConfig config = new DBRouterConfig(dbCount, tbCount, defaultDB);
+        DBRouterConfig config = new DBRouterConfig();
+        config.setTbs(tbsMap);
+        config.setDbs(dbsMap);
         return config;
     }
 
@@ -44,23 +44,6 @@ public class DBRouterAutoConfiguration implements EnvironmentAware {
         return dynamicDataSource;
     }
 
-//    @Override
-//    public void setEnvironment(Environment environment) {
-//        String prefix = "router.jdbc.datasource.";
-//
-//        dbCount = Integer.parseInt(environment.getProperty(prefix + "dbCount"));
-//        tbCount = Integer.parseInt(environment.getProperty(prefix + "tbCount"));
-//        defaultDB = environment.getProperty(prefix + "defaultDB");
-////        String cutinfo = environment.getProperty(prefix + "cutinfo");
-//
-//        String dataSources = environment.getProperty(prefix + "list");
-//        assert dataSources != null;
-//        for (String dbInfo : dataSources.split(",")) {
-//            Map<String, Object> dataSourceProps = PropertyUtil.handle(environment, prefix + dbInfo, Map.class);
-//            dataSourceMap.put(dbInfo, dataSourceProps);
-//        }
-//    }
-
     public void setEnvironment(Environment environment) {
         String prefix = "router.jdbc.datasources.";
         String dataSources = environment.getProperty(prefix + "list");
@@ -69,19 +52,29 @@ public class DBRouterAutoConfiguration implements EnvironmentAware {
             Map<String, Object> dataSourceProps = PropertyUtil.handle(environment, prefix + dbInfo, Map.class);
             dataSourceMap.put(dbInfo, dataSourceProps);
         }
-        String property = environment.getProperty("router.jdbc.rules.user.actualDataNodes");
+
+        String prefixRule = "router.jdbc.rules.";
+        String property = environment.getProperty(prefixRule + "user.actualDataNodes");
         String[] actualDataNodes = property.split("\\.");
         // db{1..2}.user_{1..4}
-        String dbs = actualDataNodes[0];
-        String tbs = actualDataNodes[1];
+
         String regex1 = "(\\w+)\\{(\\d+),(\\d+)}";
         Pattern pattern = Pattern.compile(regex1);
-        Matcher matcher = pattern.matcher(tbs);
+        Matcher matcher = pattern.matcher(actualDataNodes[1]);
         if (matcher.find()) {
-            tbCount = Integer.valueOf(matcher.group(3)) - Integer.valueOf(matcher.group(2));
+            DBRouterConfig.DBInfo cur = new DBRouterConfig.DBInfo();
+            cur.setCount(Integer.parseInt(matcher.group(3)) - Integer.parseInt(matcher.group(2)) + 1);
+            cur.setNamePrefix(matcher.group(1));
+            tbsMap.put(cur.getNamePrefix(), cur);
         }
-        dbCount = dataSourceMap.size();
-        defaultDB = dataSources.split(",")[0];
+        Matcher matcher1 = pattern.matcher(actualDataNodes[0]);
+        if (matcher1.find()) {
+            DBRouterConfig.DBInfo cur = new DBRouterConfig.DBInfo();
+            cur.setCount(Integer.parseInt(matcher1.group(3)) - Integer.parseInt(matcher1.group(2)) + 1);
+            cur.setNamePrefix(matcher1.group(1));
+            dbsMap.put(cur.getNamePrefix(), cur);
+        }
+
     }
 
     public static void main(String[] args) {

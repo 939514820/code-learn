@@ -1,47 +1,58 @@
 package com.example.dbrouter.config;
 
 
-import java.util.List;
 import java.util.Map;
 
 public class DBRouterConfig {
-    private int dbCount;  //分库数
-    private int tbCount;  //分表数
+    // db: name count
+    // tb:name count
     /**
      * 默认db
      */
-    private String defaultDB;
+    private Map<String, DBInfo> dbs;
+    private Map<String, DBInfo> tbs;
+
+    public Map<String, DBInfo> getDbs() {
+        return dbs;
+    }
+
+    public void setDbs(Map<String, DBInfo> dbs) {
+        this.dbs = dbs;
+    }
+
+    public Map<String, DBInfo> getTbs() {
+        return tbs;
+    }
+
+    public void setTbs(Map<String, DBInfo> tbs) {
+        this.tbs = tbs;
+    }
+
+
+    public static class DBInfo {
+        private String namePrefix;
+        private Integer count;
+
+        public DBInfo() {
+        }
+
+        public String getNamePrefix() {
+            return namePrefix;
+        }
+
+        public void setNamePrefix(String namePrefix) {
+            this.namePrefix = namePrefix;
+        }
+
+        public Integer getCount() {
+            return count;
+        }
+
+        public void setCount(Integer count) {
+            this.count = count;
+        }
+    }
 
     public DBRouterConfig() {
-    }
-
-    public DBRouterConfig(int dbCount, int tbCount, String defaultDB) {
-        this.dbCount = dbCount;
-        this.tbCount = tbCount;
-        this.defaultDB = defaultDB;
-    }
-
-    public int getDbCount() {
-        return dbCount;
-    }
-
-    public void setDbCount(int dbCount) {
-        this.dbCount = dbCount;
-    }
-
-    public int getTbCount() {
-        return tbCount;
-    }
-
-    public void setTbCount(int tbCount) {
-        this.tbCount = tbCount;
-    }
-
-    public String getDefaultDB() {
-        return defaultDB;
-    }
-
-    public void setDefaultDB(String defaultDB) {
-        this.defaultDB = defaultDB;
     }
 }

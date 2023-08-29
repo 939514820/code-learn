@@ -5,19 +5,19 @@
     <select id="queryUserInfoByUserId" parameterType="com.example.dbrouter.infrastructure.po.User"
             resultType="com.example.dbrouter.infrastructure.po.User">
         SELECT id, userId, userNickName, userHead, userPassword, createTime
-        FROM user_${tbIdx}
+        FROM ${tbIdx}
         where userId = #{userId}
     </select>
     <select id="getByUserId" parameterType="com.example.dbrouter.infrastructure.po.User"
             resultType="com.example.dbrouter.infrastructure.po.User">
         SELECT id, userId, userNickName, userHead, userPassword, createTime
-        FROM user_01
+        FROM user_1
         where userId = #{userId}
     </select>
     <select id="getByUserId1" parameterType="com.example.dbrouter.infrastructure.po.User"
             resultType="com.example.dbrouter.infrastructure.po.User">
         SELECT id, userId, userNickName, userHead, userPassword, createTime
-        FROM user_01
+        FROM user_1
         where userId = #{userId}
     </select>
 
