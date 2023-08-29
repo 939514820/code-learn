@@ -5,7 +5,7 @@
     <select id="queryUserInfoByUserId" parameterType="com.example.dbrouter.infrastructure.po.User"
             resultType="com.example.dbrouter.infrastructure.po.User">
         SELECT id, userId, userNickName, userHead, userPassword, createTime
-        FROM ${tbIdx}
+        FROM user_${tbIdx}
         where userId = #{userId}
     </select>
     <select id="getByUserId" parameterType="com.example.dbrouter.infrastructure.po.User"

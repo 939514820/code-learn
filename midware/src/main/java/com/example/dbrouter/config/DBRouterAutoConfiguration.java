@@ -1,26 +1,44 @@
 package com.example.dbrouter.config;
 
+import com.alibaba.fastjson.JSONObject;
+import com.example.config.WhiteListProperties;
 import com.example.dbrouter.dynamic.DynamicDataSource;
 import com.example.util.PropertyUtil;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
+import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@ConditionalOnClass(RouterProperties.class)
+@EnableConfigurationProperties(RouterProperties.class)
+
 @Configuration
 public class DBRouterAutoConfiguration implements EnvironmentAware {
 
-    private Map<String, Map<String, Object>> dataSourceMap = new HashMap<>();
+    private Map<String, RouterProperties.DataSourceCfg> dataSourceMap = new HashMap<>();
 
     private Map<String, DBRouterConfig.DBInfo> dbsMap = new HashMap<>();  //分库数
     private Map<String, DBRouterConfig.DBInfo> tbsMap = new HashMap<>();  //分表数
+    @Resource
+    private RouterProperties routerProperties;
+
+    @Bean("routerProperties")
+    @ConditionalOnMissingBean
+    public RouterProperties routerProperties(RouterProperties routerProperties) {
+        return routerProperties;
+    }
 
     @Bean
     public DBRouterConfig dbRouterConfig() {
@@ -35,8 +53,9 @@ public class DBRouterAutoConfiguration implements EnvironmentAware {
         // 创建数据源
         Map<Object, Object> targetDataSources = new HashMap<>();
         for (String dbName : dataSourceMap.keySet()) {
-            Map<String, Object> objMap = dataSourceMap.get(dbName);
-            targetDataSources.put(dbName, new DriverManagerDataSource(objMap.get("url").toString(), objMap.get("username").toString(), objMap.get("password").toString()));
+            RouterProperties.DataSourceCfg objMap = dataSourceMap.get(dbName);
+            targetDataSources.put(dbName, new DriverManagerDataSource(objMap.getUrl(), objMap.getUsername(),
+                    objMap.getPassword()));
         }
         // 设置数据源
         DynamicDataSource dynamicDataSource = new DynamicDataSource();
@@ -48,32 +67,36 @@ public class DBRouterAutoConfiguration implements EnvironmentAware {
         String prefix = "router.jdbc.datasources.";
         String dataSources = environment.getProperty(prefix + "list");
         assert dataSources != null;
-        for (String dbInfo : dataSources.split(",")) {
-            Map<String, Object> dataSourceProps = PropertyUtil.handle(environment, prefix + dbInfo, Map.class);
-            dataSourceMap.put(dbInfo, dataSourceProps);
+        for (RouterProperties.DataSourceCfg dbInfo : routerProperties.getDatasources()) {
+            dataSourceMap.put(dbInfo.getName(), dbInfo);
+        }
+        List<RouterProperties.RulesCfg> rules = routerProperties.getRules();
+//        String prefixRule = "router.jdbc.rules.";
+//        String table = environment.getProperty(prefixRule + "table");
+//        String database = environment.getProperty(prefixRule + "database");
+//        String property = environment.getProperty(prefixRule + "actualDataNodes");
+        for (RouterProperties.RulesCfg rule : rules) {
+            String[] actualDataNodes = rule.getActualDataNodes().split("\\.");
+            // db{1..2}.user_{1..4}
+
+            String regex1 = "(\\w+)\\{(\\d+),(\\d+)}";
+            Pattern pattern = Pattern.compile(regex1);
+            Matcher matcher = pattern.matcher(actualDataNodes[1]);
+            if (matcher.find()) {
+                DBRouterConfig.DBInfo cur = new DBRouterConfig.DBInfo();
+                cur.setCount(Integer.parseInt(matcher.group(3)) - Integer.parseInt(matcher.group(2)) + 1);
+                cur.setNamePrefix(matcher.group(1));
+                tbsMap.put(rule.getTable(), cur);
+            }
+            Matcher matcher1 = pattern.matcher(actualDataNodes[0]);
+            if (matcher1.find()) {
+                DBRouterConfig.DBInfo cur = new DBRouterConfig.DBInfo();
+                cur.setCount(Integer.parseInt(matcher1.group(3)) - Integer.parseInt(matcher1.group(2)) + 1);
+                cur.setNamePrefix(matcher1.group(1));
+                dbsMap.put(rule.getDatabase(), cur);
+            }
         }
 
-        String prefixRule = "router.jdbc.rules.";
-        String property = environment.getProperty(prefixRule + "user.actualDataNodes");
-        String[] actualDataNodes = property.split("\\.");
-        // db{1..2}.user_{1..4}
-
-        String regex1 = "(\\w+)\\{(\\d+),(\\d+)}";
-        Pattern pattern = Pattern.compile(regex1);
-        Matcher matcher = pattern.matcher(actualDataNodes[1]);
-        if (matcher.find()) {
-            DBRouterConfig.DBInfo cur = new DBRouterConfig.DBInfo();
-            cur.setCount(Integer.parseInt(matcher.group(3)) - Integer.parseInt(matcher.group(2)) + 1);
-            cur.setNamePrefix(matcher.group(1));
-            tbsMap.put(cur.getNamePrefix(), cur);
-        }
-        Matcher matcher1 = pattern.matcher(actualDataNodes[0]);
-        if (matcher1.find()) {
-            DBRouterConfig.DBInfo cur = new DBRouterConfig.DBInfo();
-            cur.setCount(Integer.parseInt(matcher1.group(3)) - Integer.parseInt(matcher1.group(2)) + 1);
-            cur.setNamePrefix(matcher1.group(1));
-            dbsMap.put(cur.getNamePrefix(), cur);
-        }
 
     }
 

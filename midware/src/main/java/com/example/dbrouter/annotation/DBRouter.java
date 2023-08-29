@@ -9,4 +9,6 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.TYPE})
 public @interface DBRouter {
     String key() default "";
+    String db() default "";
+    String table() default "";
 }

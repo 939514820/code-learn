@@ -36,9 +36,8 @@ public class DoDbRouterJointPoint {
         String tbPre = "";
         try {
             Object dbKeyAttr = getAttrValue(key, jp);
-            // TODO 获取当前mappper的db和tb
-            String dbName="db";
-            String tbName="user_";
+            String dbName = dbRouter.db();
+            String tbName = dbRouter.table();
             if (dbRouterConfig.getDbs().containsKey(dbName)) {
                 DBRouterConfig.DBInfo user = dbRouterConfig.getDbs().get(dbName);
                 dbCount = user.getCount();
@@ -47,7 +46,6 @@ public class DoDbRouterJointPoint {
             if (dbRouterConfig.getTbs().containsKey(tbName)) {
                 DBRouterConfig.DBInfo user = dbRouterConfig.getTbs().get(tbName);
                 tbCount = user.getCount();
-                tbPre = user.getNamePrefix();
             }
             int size = dbCount * tbCount;
             // 扰动函数
@@ -57,7 +55,7 @@ public class DoDbRouterJointPoint {
             int tbIdx = idxSize - tbCount * (dbIdx - 1);
 //             设置到 ThreadLocal
             DBContextHolder.setDBKey(dbPre + dbIdx);
-            DBContextHolder.setTBKey(tbPre + tbIdx);
+            DBContextHolder.setTBKey("" + tbIdx);
             return jp.proceed();
         } finally {
             DBContextHolder.clearTBKey();
