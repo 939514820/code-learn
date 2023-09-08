@@ -10,6 +10,7 @@
         <module>service-provider</module>
         <module>mybatis</module>
         <module>midware-test</module>
+        <module>api-gateway</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
