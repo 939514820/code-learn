@@ -18,28 +18,28 @@ import java.sql.SQLException;
 @Slf4j
 public class Main {
     public static void main(String[] args) throws IOException {
-        System.out.println("Hello world!");
-//        File reader = new File("D:\\IdeaProjects\\code-learn\\mybatis-test\\src\\main\\resources\\mybatis-config.xml");
-        Reader reader = Resources.getResourceAsReader("mybatis-config.xml");
-        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
+
+        // 1.创建工厂
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build();
+        // 2.获取会话
         SqlSession sqlSession = sqlSessionFactory.openSession();
         // 3. 获取映射器对象
         IUserDao userDao = sqlSession.getMapper(IUserDao.class);
 
         // 4. 测试验证
-//        User res = userDao.queryUserInfoById(1L);
+        User res = userDao.queryUserInfoById(1L);
 
 //        Integer res2 = userDao.queryUserInfo1(user);
 
-//        log.info("测试结果：{}", res);
+        log.info("测试结果：{}", res);
 //        log.info("测试结果：{}", res);
 //        log.info("测试结果：{}", res2);
-        System.out.println("=============");
-        User user = new User();
-        user.setId(2);
-        user.setAge(111);
-        user.setName("zhangsan");
-        int res1 = userDao.insert(user);
+//        System.out.println("=============");
+//        User user = new User();
+//        user.setId(2);
+//        user.setAge(111);
+//        user.setName("zhangsan");
+//        int res1 = userDao.insert(user);
     }
 
     @Test

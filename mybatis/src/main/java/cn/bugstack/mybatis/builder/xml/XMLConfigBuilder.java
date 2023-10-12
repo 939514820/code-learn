@@ -3,13 +3,11 @@ package cn.bugstack.mybatis.builder.xml;
 import cn.bugstack.mybatis.builder.BaseBuilder;
 import cn.bugstack.mybatis.datasource.DataSourceFactory;
 import cn.bugstack.mybatis.io.Resources;
-import cn.bugstack.mybatis.mapping.BoundSql;
 import cn.bugstack.mybatis.mapping.Environment;
-import cn.bugstack.mybatis.mapping.MappedStatement;
-import cn.bugstack.mybatis.mapping.SqlCommandType;
 import cn.bugstack.mybatis.plugin.Interceptor;
 import cn.bugstack.mybatis.session.Configuration;
 import cn.bugstack.mybatis.transaction.TransactionFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -20,15 +18,9 @@ import javax.sql.DataSource;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-/**
- * @author 小傅哥，微信：fustack
- * @description XML配置构建器，建造者模式，继承BaseBuilder
- * @github https://github.com/fuzhengwei
- * @copyright 公众号：bugstack虫洞栈 | 博客：https://bugstack.cn - 沉淀、分享、成长，让自己和他人都能有所收获！
- */
+
+@Slf4j
 public class XMLConfigBuilder extends BaseBuilder {
 
     private Element root;
@@ -42,7 +34,7 @@ public class XMLConfigBuilder extends BaseBuilder {
             Document document = saxReader.read(new InputSource(reader));
             root = document.getRootElement();
         } catch (DocumentException e) {
-            e.printStackTrace();
+            log.error("", e);
         }
     }
 
@@ -66,11 +58,13 @@ public class XMLConfigBuilder extends BaseBuilder {
     }
 
     private void pluginElement(Element parent) throws InstantiationException, IllegalAccessException {
-        if (parent == null) {return;}
+        if (parent == null) {
+            return;
+        }
         List<Element> plugin = parent.elements();
         for (Element element : plugin) {
             String interceptor = element.attributeValue("interceptor");
-// 参数配置
+            // 参数配置
             Properties properties = new Properties();
             List<Element> propertyElementList = element.elements("property");
             for (Element property : propertyElementList) {

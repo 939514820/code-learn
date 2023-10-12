@@ -6,10 +6,12 @@ import cn.bugstack.mybatis.plugin.Interceptor;
 import cn.bugstack.mybatis.plugin.Intercepts;
 import cn.bugstack.mybatis.plugin.Invocation;
 import cn.bugstack.mybatis.plugin.Signature;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
 import java.util.Properties;
 
+@Slf4j
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class})})
 public class TestPlugin implements Interceptor {
 
@@ -21,14 +23,14 @@ public class TestPlugin implements Interceptor {
         BoundSql boundSql = statementHandler.getBoundSql();
         String sql = boundSql.getSql();
         // 输出SQL
-        System.out.println("拦截SQL：" + sql);
+        log.info("拦截SQL：" + sql);
         // 放行
         return invocation.proceed();
     }
 
     @Override
     public void setProperties(Properties properties) {
-        System.out.println("参数输出：" + properties.getProperty("test00"));
+        log.info("参数输出：" + properties.getProperty("test00"));
     }
 
 }
