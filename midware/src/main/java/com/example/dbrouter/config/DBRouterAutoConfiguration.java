@@ -1,9 +1,6 @@
 package com.example.dbrouter.config;
 
-import com.alibaba.fastjson.JSONObject;
-import com.example.config.WhiteListProperties;
 import com.example.dbrouter.dynamic.DynamicDataSource;
-import com.example.util.PropertyUtil;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

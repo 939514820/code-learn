@@ -1,4 +1,4 @@
-package com.example.limiter;
+package com.example.limit.limiter;
 
 
 import com.google.common.util.concurrent.RateLimiter;

@@ -1,6 +1,6 @@
-package com.example.limiter;
+package com.example.limit.limiter;
 
-import com.example.annotation.DoRateLimiter;
+import com.example.limit.annotation.DoRateLimiter;
 import org.aspectj.lang.ProceedingJoinPoint;
 
 public class DistributeLimitService implements LimitService {

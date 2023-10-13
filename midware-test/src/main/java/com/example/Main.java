@@ -8,7 +8,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 @SpringBootApplication
 public class Main {
     public static void main(String[] args) {
-//        int i = 10_000;
+//      int i = 10_000;
         SpringApplication.run(Main.class, args);
     }
 }

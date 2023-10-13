@@ -1,7 +1,7 @@
-package com.example.limiter;
+package com.example.limit.limiter;
 
 import com.alibaba.fastjson.JSON;
-import com.example.annotation.DoRateLimiter;
+import com.example.limit.annotation.DoRateLimiter;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.reflect.MethodSignature;

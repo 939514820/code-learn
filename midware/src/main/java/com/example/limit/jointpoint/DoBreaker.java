@@ -1,8 +1,7 @@
-package com.example.jointpoint;
+package com.example.limit.jointpoint;
 
 import com.alibaba.fastjson.JSON;
-import com.example.annotation.Breaker;
-import com.example.annotation.WhiteList;
+import com.example.limit.Breaker;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
@@ -15,7 +14,7 @@ import java.lang.reflect.Method;
 
 @Aspect
 public class DoBreaker {
-    @Pointcut("@annotation(com.example.annotation.Breaker)")
+    @Pointcut("@annotation(com.example.limit.Breaker)")
     public void pointCut() {
     }
 

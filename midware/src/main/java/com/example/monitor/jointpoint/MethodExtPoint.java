@@ -1,7 +1,7 @@
-package com.example.jointpoint;
+package com.example.monitor.jointpoint;
 
 import com.alibaba.fastjson.JSON;
-import com.example.annotation.DoMethodExt;
+import com.example.monitor.annotation.MethodExt;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -18,11 +18,11 @@ import java.lang.reflect.Method;
 
 @Aspect
 @Component
-public class DoMethodExtPoint {
+public class MethodExtPoint {
 
-    private Logger logger = LoggerFactory.getLogger(DoMethodExtPoint.class);
+    private Logger logger = LoggerFactory.getLogger(MethodExtPoint.class);
 
-    @Pointcut("@annotation(com.example.annotation.DoMethodExt)")
+    @Pointcut("@annotation(com.example.monitor.annotation.MethodExt)")
     public void aopPoint() {
     }
 
@@ -30,7 +30,7 @@ public class DoMethodExtPoint {
     public Object doRouter(ProceedingJoinPoint jp) throws Throwable {
         // 获取内容
         Method method = getMethod(jp);
-        DoMethodExt doMethodExt = method.getAnnotation(DoMethodExt.class);
+        MethodExt doMethodExt = method.getAnnotation(MethodExt.class);
         // 获取拦截方法
         String methodName = doMethodExt.method();
         // 功能处理

@@ -1,6 +1,6 @@
-package com.example.jointpoint;
+package com.example.monitor.jointpoint;
 
-import com.example.annotation.DoMonitor;
+import com.example.monitor.annotation.TimeCount;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -8,28 +8,29 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 
 @Aspect
-public class DoJointPoint {
-    @Pointcut("@annotation(com.example.annotation.DoMonitor)")
+public class TimeCountPoint {
+    private static Logger log = LoggerFactory.getLogger(TimeCountPoint.class);
+
+    @Pointcut("@annotation(com.example.monitor.annotation.TimeCount)")
     public void aopPoint() {
     }
 
     @Around("aopPoint() && @annotation(doMonitor)")
-    public Object doRouter(ProceedingJoinPoint jp, DoMonitor doMonitor) throws Throwable {
+    public Object doRouter(ProceedingJoinPoint jp, TimeCount doMonitor) throws Throwable {
         long start = System.currentTimeMillis();
         Method method = getMethod(jp);
         try {
             return jp.proceed();
         } finally {
-            System.out.println("监控 - Begin By AOP");
-            System.out.println("监控索引：" + doMonitor.key());
-            System.out.println("监控描述：" + doMonitor.desc());
-            System.out.println("方法名称：" + method.getName());
-            System.out.println("方法耗时：" + (System.currentTimeMillis() - start) + "ms");
-            System.out.println("监控 - End\r\n");
+            long end = System.currentTimeMillis();
+            log.info("监控索引：{} 监控描述：{}方法名称：{}方法耗时：{}",
+                    doMonitor.key(), doMonitor.desc(), method.getName(), (end - start) + "ms");
         }
     }
 

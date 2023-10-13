@@ -1,8 +1,8 @@
-package com.example.jointpoint;
+package com.example.limit.jointpoint;
 
 
-import com.example.annotation.DoRateLimiter;
-import com.example.limiter.SimpleLimitService;
+import com.example.limit.annotation.DoRateLimiter;
+import com.example.limit.limiter.SimpleLimitService;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 public class DoRateLimiterPoint {
     private Logger logger = LoggerFactory.getLogger(DoRateLimiterPoint.class);
 
-    @Pointcut("@annotation(com.example.annotation.DoRateLimiter)")
+    @Pointcut("@annotation(com.example.limit.annotation.DoRateLimiter)")
     public void pointCut() {
     }
 

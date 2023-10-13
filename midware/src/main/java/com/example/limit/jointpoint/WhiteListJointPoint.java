@@ -1,7 +1,7 @@
-package com.example.jointpoint;
+package com.example.limit.jointpoint;
 
 import com.alibaba.fastjson.JSON;
-import com.example.annotation.WhiteList;
+import com.example.limit.annotation.WhiteList;
 import org.apache.commons.beanutils.BeanUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -21,7 +21,7 @@ public class WhiteListJointPoint {
     @Resource
     private String whiteListConfig;
 
-    @Pointcut("@annotation(com.example.annotation.WhiteList)")
+    @Pointcut("@annotation(com.example.limit.annotation.WhiteList)")
     public void point() {
     }
 

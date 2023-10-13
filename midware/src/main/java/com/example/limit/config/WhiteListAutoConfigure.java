@@ -1,4 +1,4 @@
-package com.example.config;
+package com.example.limit.config;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;

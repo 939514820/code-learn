@@ -1,4 +1,4 @@
-package com.example.annotation;
+package com.example.monitor.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,8 +7,8 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface WhiteList {
+public @interface TimeCount {
     String key() default "";
 
-    String returnJson() default "";
+    String desc() default "";
 }
