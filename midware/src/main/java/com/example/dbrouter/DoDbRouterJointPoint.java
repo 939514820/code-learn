@@ -39,13 +39,14 @@ public class DoDbRouterJointPoint {
             String dbName = dbRouter.db();
             String tbName = dbRouter.table();
             if (dbRouterConfig.getDbs().containsKey(dbName)) {
-                DBRouterConfig.DBInfo user = dbRouterConfig.getDbs().get(dbName);
-                dbCount = user.getCount();
-                dbPre = user.getNamePrefix();
+                DBRouterConfig.SliceInfo dbInfo = dbRouterConfig.getDbs().get(dbName);
+                dbCount = dbInfo.getCount();
+                dbPre = dbInfo.getNamePrefix();
             }
             if (dbRouterConfig.getTbs().containsKey(tbName)) {
-                DBRouterConfig.DBInfo user = dbRouterConfig.getTbs().get(tbName);
+                DBRouterConfig.SliceInfo user = dbRouterConfig.getTbs().get(tbName);
                 tbCount = user.getCount();
+                tbPre = user.getNamePrefix();
             }
             int size = dbCount * tbCount;
             // 扰动函数
@@ -55,7 +56,7 @@ public class DoDbRouterJointPoint {
             int tbIdx = idxSize - tbCount * (dbIdx - 1);
 //             设置到 ThreadLocal
             DBContextHolder.setDBKey(dbPre + dbIdx);
-            DBContextHolder.setTBKey("" + tbIdx);
+            DBContextHolder.setTBKey(tbPre + tbIdx);
             return jp.proceed();
         } finally {
             DBContextHolder.clearTBKey();

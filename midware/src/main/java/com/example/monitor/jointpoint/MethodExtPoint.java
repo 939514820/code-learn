@@ -32,14 +32,14 @@ public class MethodExtPoint {
         Method method = getMethod(jp);
         MethodExt doMethodExt = method.getAnnotation(MethodExt.class);
         // 获取拦截方法
-        String methodName = doMethodExt.method();
+        String extMethodName = doMethodExt.method();
         // 功能处理
-        Method methodExt = getClass(jp).getMethod(methodName, method.getParameterTypes());
+        Method methodExt = getClass(jp).getMethod(extMethodName, method.getParameterTypes());
         Class<?> returnType = methodExt.getReturnType();
 
         // 判断方法返回类型
         if (!returnType.getName().equals("boolean")) {
-            throw new RuntimeException("annotation @DoMethodExt set method：" + methodName + " returnType is not boolean");
+            throw new RuntimeException("annotation @DoMethodExt set method：" + extMethodName + " returnType is not boolean");
         }
         // 拦截判断正常，继续
         boolean invoke = (boolean) methodExt.invoke(jp.getThis(), jp.getArgs());

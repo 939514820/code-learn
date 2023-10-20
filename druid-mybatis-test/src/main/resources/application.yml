@@ -1,0 +1,109 @@
+server:
+  port: 8080
+
+#mybatis-plus配置
+mybatis-plus:
+  mapper-locations: classpath:/mybatis/mapper/*.xml
+  #数据库实体类的包全路径，方便在mapper.xml中不许使用实体类的全路径，写类名就行（不区分大小写）
+  type-aliases-package: com.example.dto
+  configuration:
+    #sql日志打印
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    #开启驼峰命名匹配
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      #逻辑删除
+      logic-delete-value: 0
+      logic-not-delete-value: 1
+      logic-delete-field: deleted
+
+spring:
+  shardingsphere:
+    props:
+      sql:
+        show:
+          true
+    datasource:
+      names: ds0,ds1,slave,master
+      enabled: true
+      ds0:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/test01?useUnicode=true&serverTimezone=GMT%2B8
+        username: root
+        password: 123456
+        initialSize: 5
+        minIdle: 10
+        maxActive: 50
+        maxWait: 6000
+        timeBetweenEvictionRunsMillis: 300000
+        minEvictableIdleTimeMillis: 300000
+        validationQuery: SELECT 1
+        testWhileIdle: true
+        testOnBorrow: false
+        testOnReturn: false
+        validationQueryTimeout: 10
+      ds1:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/test02?useUnicode=true&serverTimezone=GMT%2B8
+        username: root
+        password: 123456
+        initialSize: 5
+        minIdle: 10
+        maxActive: 50
+        maxWait: 6000
+        timeBetweenEvictionRunsMillis: 300000
+        minEvictableIdleTimeMillis: 300000
+        validationQuery: SELECT 1
+        testWhileIdle: true
+        testOnBorrow: false
+        testOnReturn: false
+        validationQueryTimeout: 10
+      slave:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/test-slave?useUnicode=true&serverTimezone=GMT%2B8
+        username: root
+        password: 123456
+      master:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/test-master?useUnicode=true&serverTimezone=GMT%2B8
+        username: root
+        password: 123456
+    # 读写分离
+    rules:
+      readwrite-splitting:
+        data-sources:
+          master-slave:
+            write-data-source-name: master
+            read-data-source-names:
+              - slave
+            load-balancer-name: roundRobin # 负载均衡算法名称
+        load-balancers:
+          roundRobin:
+            type: ROUND_ROBIN # 一共两种一种是 RANDOM（随机），一种是 ROUND_ROBIN（轮询）
+   # 分片规则
+      sharding:
+        sharding-algorithms:
+          database-inline:
+            props:
+              algorithm-expression: ds$->{user_id % 2}
+            type: INLINE
+          table-inline:
+            props:
+              algorithm-expression: user_$->{(user_id % 5) % 2}
+            type: INLINE
+        tables:
+          user:
+            actual-data-nodes: ds$->{0..1}.user_$->{0..1}
+            database-strategy:
+              standard:
+                sharding-algorithm-name: database-inline
+                sharding-column: user_id
+            table-strategy:
+              standard:
+                sharding-algorithm-name: table-inline
+                sharding-column: user_id

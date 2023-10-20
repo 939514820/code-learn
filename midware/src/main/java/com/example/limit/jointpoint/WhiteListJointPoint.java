@@ -9,17 +9,21 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.lang.reflect.Method;
+import java.util.List;
 
 @Aspect
 @Component
 public class WhiteListJointPoint {
+    private Logger log = LoggerFactory.getLogger(WhiteListJointPoint.class);
     @Resource
-    private String whiteListConfig;
+    private List<String> whiteListConfig;
 
     @Pointcut("@annotation(com.example.limit.annotation.WhiteList)")
     public void point() {
@@ -32,14 +36,13 @@ public class WhiteListJointPoint {
         if (StringUtils.isEmpty(key)) {
             return jp.proceed();
         }
-        System.out.println("whiteList:" + whiteListConfig);
+        log.info("whiteList:" + whiteListConfig);
         String filedValue = getFiledValue(whiteList.key(), jp.getArgs());
-        String[] list = whiteListConfig.split(",");
-        for (String cur : list) {
-            if (cur.equals(filedValue)) {
-                return jp.proceed();
-            }
+
+        if (whiteListConfig.contains(filedValue)) {
+            return jp.proceed();
         }
+
         Method method = getMethod(jp);
         return defaultObj(whiteList, method);
     }
@@ -47,6 +50,7 @@ public class WhiteListJointPoint {
     private String getFiledValue(String filed, Object[] args) {
         String filedValue = null;
         for (Object arg : args) {
+            log.info("arg:{}", arg);
             try {
                 if (null == filedValue || "".equals(filedValue)) {
                     filedValue = BeanUtils.getProperty(arg, filed);

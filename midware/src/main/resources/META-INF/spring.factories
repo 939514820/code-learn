@@ -1,3 +1,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
  com.example.limit.config.WhiteListAutoConfigure,\
- com.example.dbrouter.config.DBRouterAutoConfiguration
+ com.example.dbrouter.config.DBRouterAutoConfiguration,\
+ com.example.monitor.config.MonitorAutoConfigure

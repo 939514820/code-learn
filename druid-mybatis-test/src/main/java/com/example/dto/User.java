@@ -1,24 +1,26 @@
-package com.example.dbrouter.infrastructure.po;
+package com.example.dto;
 
-import com.example.dbrouter.DBRouterBase;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 
 import java.util.Date;
-
-
-public class User extends DBRouterBase {
-
+public class User {
+    @TableId(type = IdType.AUTO)
     private Long id;
-    private String userId;          // 用户ID
-    private String userNickName;    // 昵称
-    private String userHead;        // 头像
-    private String userPassword;    // 密码
-    private Date createTime;        // 创建时间
+    @TableField("user_id")
+    private Integer userId;
+    private String userNickName;
+    private String userHead;
+    private String userPassword;
+    private Date createTime;
     private Date updateTime;        // 更新时间
 
     public User() {
     }
 
-    public User(String userId) {
+    public User(Integer userId) {
         this.userId = userId;
     }
 
@@ -30,11 +32,11 @@ public class User extends DBRouterBase {
         this.id = id;
     }
 
-    public String getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 

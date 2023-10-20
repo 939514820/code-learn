@@ -14,12 +14,12 @@ router:
     datasources:
       - name: db1
         driverClassName: com.mysql.jdbc.Driver
-        url: jdbc:mysql://127.0.0.1:3306/test01?useUnicode=true
+        url: jdbc:mysql://127.0.0.1:3306/test01?useUnicode=true&serverTimezone=GMT%2B8
         username: root
         password: 123456
       - name: db2
         driverClassName: com.mysql.jdbc.Driver
-        url: jdbc:mysql://127.0.0.1:3306/test02?useUnicode=true
+        url: jdbc:mysql://127.0.0.1:3306/test02?useUnicode=true&serverTimezone=GMT%2B8
         username: root
         password: 123456
     rules:
@@ -125,3 +125,4 @@ router:
 #
 #props:
 #  sql-show: false
+# https://shardingsphere.apache.org/document/5.0.0/cn/overview/

@@ -11,21 +11,21 @@
 
     <artifactId>midware</artifactId>
 
+    <packaging>jar</packaging>
+<!--    <properties>-->
+<!--        <maven.compiler.source>8</maven.compiler.source>-->
+<!--        <maven.compiler.target>8</maven.compiler.target>-->
+<!--        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>-->
 
-    <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-        <!-- Build args -->
-        <argline>-Xms512m -Xmx512m</argline>
-        <skip_maven_deploy>false</skip_maven_deploy>
-        <updateReleaseInfo>true</updateReleaseInfo>
-        <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
-        <maven.test.skip>true</maven.test.skip>
-        <!-- 自定义MANIFEST.MF -->
-        <maven.configuration.manifestFile>src/main/resources/META-INF/MANIFEST.MF</maven.configuration.manifestFile>
-    </properties>
+<!--        &lt;!&ndash; Build args &ndash;&gt;-->
+<!--        <argline>-Xms512m -Xmx512m</argline>-->
+<!--        <skip_maven_deploy>false</skip_maven_deploy>-->
+<!--        <updateReleaseInfo>true</updateReleaseInfo>-->
+<!--        <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>-->
+<!--        <maven.test.skip>true</maven.test.skip>-->
+<!--        &lt;!&ndash; 自定义MANIFEST.MF &ndash;&gt;-->
+<!--&lt;!&ndash;        <maven.configuration.manifestFile>src/main/resources/META-INF/MANIFEST.MF</maven.configuration.manifestFile>&ndash;&gt;-->
+<!--    </properties>-->
 
     <dependencies>
         <dependency>
@@ -91,7 +91,6 @@
     </dependencies>
 
     <build>
-        <finalName>monitor</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -111,59 +110,14 @@
             </testResource>
         </testResources>
         <plugins>
-            <!-- 将byte-buddy打包到Agent中 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.4</version>
-                <configuration>
-                    <archive>
-                        <manifestFile>${maven.configuration.manifestFile}</manifestFile>
-                    </archive>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>2.5</version>
-                <configuration>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
                 <configuration>
+                    <compilerVersion>1.8</compilerVersion>
                     <source>1.8</source>
                     <target>1.8</target>
-                    <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>2.1.2</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

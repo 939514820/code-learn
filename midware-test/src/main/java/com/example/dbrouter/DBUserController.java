@@ -1,4 +1,4 @@
-package com.example.dbrouter.interfaces;
+package com.example.dbrouter;
 
 import com.example.dbrouter.infrastructure.dao.IUserDao;
 import com.example.dbrouter.infrastructure.po.User;
@@ -23,11 +23,21 @@ public class DBUserController {
     @Resource
     private IUserDao userDao;
 
+    /**
+     * 自动路由
+     * @return
+     */
     @RequestMapping(path = "/api/queryUserInfoById", method = RequestMethod.GET)
     public User queryUserInfoById() {
         return userDao.queryUserInfoByUserId(new User("980765512"));
     }
 
+    /**
+     *
+     * @param userId
+     * @param db @DS测试
+     * @return
+     */
     @RequestMapping(path = "/api/getByUserId", method = RequestMethod.GET)
     public User queryUserInfo(String userId, String db) {
         if (db.equals("db_01")) {
