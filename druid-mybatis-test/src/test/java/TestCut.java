@@ -22,6 +22,7 @@ public class TestCut {
 
     @Test
     public void test() {
+        // 测试分库分表
 //        for (int i = 1; i < 50; i++) {
 //            User user = new User();
 //            user.setUserId(i);
@@ -30,18 +31,20 @@ public class TestCut {
 //            user.setUserPassword("1");
 //            user.setCreateTime(new Date());
 //            user.setUpdateTime(new Date());
-////            userDao.insert(user);
+//            userDao.insert(user);
 //        }
+        // 测试读写分离
         QueryWrapper<UserInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda().eq(UserInfo::getUserId, 2);
-        userInfoMapper.selectOne(queryWrapper);
-//        UserInfo user = new UserInfo();
-//        user.setUserId(50);
-//        user.setUserNickName("");
-//        user.setUserHead("head");
-//        user.setUserPassword("1");
-//        user.setCreateTime(new Date());
-//        user.setUpdateTime(new Date());
-//        userInfoMapper.insert(user);
+        UserInfo userInfo = userInfoMapper.selectOne(queryWrapper);
+        System.out.println(userInfo);
+        UserInfo user = new UserInfo();
+        user.setUserId(55);
+        user.setUserNickName("");
+        user.setUserHead("headinsert");
+        user.setUserPassword("1");
+        user.setCreateTime(new Date());
+        user.setUpdateTime(new Date());
+        userInfoMapper.insert(user);
     }
 }

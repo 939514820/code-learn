@@ -20,9 +20,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.example</groupId>
-    <artifactId>code-learn</artifactId>
+    <artifactId>learn</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>code-learn</name>
+    <name>learn</name>
     <description>Demo project for Spring Boot</description>
     <properties>
         <java.version>1.8</java.version>
