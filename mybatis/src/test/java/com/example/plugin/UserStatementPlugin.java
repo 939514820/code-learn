@@ -13,7 +13,7 @@ import java.util.Properties;
 
 @Slf4j
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class})})
-public class TestPlugin implements Interceptor {
+public class UserStatementPlugin implements Interceptor {
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {

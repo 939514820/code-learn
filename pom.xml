@@ -12,6 +12,8 @@
         <module>midware-test</module>
         <module>api-gateway</module>
         <module>druid-mybatis-test</module>
+        <module>facade</module>
+        <module>mysql</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
