@@ -8,7 +8,6 @@ import cn.bugstack.mybatis.mapping.MappedStatement;
 import cn.bugstack.mybatis.session.Configuration;
 import cn.bugstack.mybatis.session.ResultHandler;
 import cn.bugstack.mybatis.session.RowBounds;
-import org.springframework.cache.interceptor.KeyGenerator;
 
 import java.sql.Connection;
 import java.sql.SQLException;

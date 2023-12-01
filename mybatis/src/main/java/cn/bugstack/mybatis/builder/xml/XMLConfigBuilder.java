@@ -63,7 +63,7 @@ public class XMLConfigBuilder extends BaseBuilder {
         }
         List<Element> plugin = parent.elements();
         for (Element element : plugin) {
-            String interceptor = element.attributeValue("interceptor");
+
             // 参数配置
             Properties properties = new Properties();
             List<Element> propertyElementList = element.elements("property");
@@ -71,6 +71,8 @@ public class XMLConfigBuilder extends BaseBuilder {
                 properties.setProperty(property.attributeValue("name"), property.attributeValue("value"));
             }
             // 获取插件实现类并实例化：cn.bugstack.mybatis.test.plugin.TestPlugin
+
+            String interceptor = element.attributeValue("interceptor");
             Interceptor interceptorInstance = (Interceptor) resolveClass(interceptor).newInstance();
             interceptorInstance.setProperties(properties);
             configuration.addInterceptor(interceptorInstance);

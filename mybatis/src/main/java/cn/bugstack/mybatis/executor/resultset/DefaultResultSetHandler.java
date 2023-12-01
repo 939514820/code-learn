@@ -57,7 +57,7 @@ public class DefaultResultSetHandler implements ResultSetHandler {
 
 
     @Override
-    public  List<Object> handleResultSets(Statement stmt) throws SQLException {
+    public List<Object> handleResultSets(Statement stmt) throws SQLException {
 //        ResultSet resultSet = stmt.getResultSet();
 //        return resultSet2Obj(stmt,resultSet, mappedStatement.getResultType());
         final List<Object> multipleResults = new ArrayList<>();
@@ -181,6 +181,7 @@ public class DefaultResultSetHandler implements ResultSetHandler {
         }
         return foundValues;
     }
+
     private Object createResultObject(Class<?> type) throws SQLException {
         final Class<?> resultType = type;
         final MetaClass metaType = MetaClass.forClass(resultType);
@@ -192,7 +193,7 @@ public class DefaultResultSetHandler implements ResultSetHandler {
     }
 
     // https://mp.weixin.qq.com/s/0v2ugaiGEwZcFiG04k3-hg
-    private <T> List<T> resultSet2Obj(Statement stmt,ResultSet resultSet, Class<?> clazz) {
+    private <T> List<T> resultSet2Obj(Statement stmt, ResultSet resultSet, Class<?> clazz) {
         List<T> list = new ArrayList<>();
         try {
             ResultSetMetaData metaData = resultSet.getMetaData();
@@ -205,13 +206,13 @@ public class DefaultResultSetHandler implements ResultSetHandler {
                     String columnName = metaData.getColumnName(i);
                     // TODO 返回值不一定是object
                     if (obj instanceof Integer) {
-                       int value= resultSet.getInt(i);
+                        int value = resultSet.getInt(i);
 
                     } else if (obj instanceof Long) {
                         long value = resultSet.getLong(i);
                     } else if (obj instanceof Boolean) {
                         boolean value = resultSet.getBoolean(i);
-                    }else {
+                    } else {
                         Object value = resultSet.getObject(i);
                         MetaObject metaObject = SystemMetaObject.forObject(obj);
                         if (StringUtil.isNotEmpty(columnName) && metaObject.hasSetter(columnName)) {
