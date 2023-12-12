@@ -140,7 +140,6 @@ public class PooledDataSource implements DataSource {
                                 break;
                             }
                         }
-
                     }
                 }
                 // 获得到链接

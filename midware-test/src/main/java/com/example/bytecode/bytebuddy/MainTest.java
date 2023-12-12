@@ -1,4 +1,4 @@
-package com.example.bytecode;
+package com.example.bytecode.bytebuddy;
 
 
 import lombok.Data;
