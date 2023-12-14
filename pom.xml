@@ -14,6 +14,7 @@
         <module>druid-mybatis-test</module>
         <module>facade</module>
         <module>mysql</module>
+        <module>javaagent</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

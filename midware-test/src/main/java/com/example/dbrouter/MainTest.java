@@ -1,4 +1,4 @@
-package com.example;
+package com.example.dbrouter;
 
 import com.example.limit.annotation.DoRateLimiter;
 import com.example.limit.annotation.WhiteList;
