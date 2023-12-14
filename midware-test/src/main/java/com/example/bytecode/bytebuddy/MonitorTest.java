@@ -5,7 +5,6 @@ import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.matcher.ElementMatchers;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
@@ -17,11 +16,12 @@ public class MonitorTest {
                 .method(ElementMatchers.named("queryUserInfo"))
                 .intercept(MethodDelegation.to(MonitorDemo.class))
                 .make();
-        dynamicType.saveIn(new File("com.example.bytecode.bytebuddy"));
+
+//        dynamicType.saveIn(new File("com.example.bytecode.bytebuddy"));
         Class<?> clazz = dynamicType.load(MonitorTest.class.getClassLoader())
                 .getLoaded();
         Object instance = clazz.newInstance();
-
+        // 反射执行增强方法
         clazz.getMethod("queryUserInfo", String.class).invoke(instance, "zhangsan");
 
     }
