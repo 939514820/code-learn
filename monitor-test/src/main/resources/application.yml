@@ -1,0 +1,15 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: monitor-test
+
+#Prometheus springboot监控配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus #注意这里用'*'的话是暴露所有，不太安全
+  endpoint:
+    metrics:
+      enabled: true
