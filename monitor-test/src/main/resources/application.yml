@@ -3,13 +3,39 @@ server:
 spring:
   application:
     name: monitor-test
-
-#Prometheus springboot监控配置
+  # consul config
+#  cloud:
+#    consul:
+#      host: 127.0.0.1
+#      port: 8500
+#      config:
+#        enabled: true
+#      discovery:
+#        service-name: ${spring.application.name}
+#        instance-id: ${spring.application.name}
+#        heartbeat:
+#          enabled: true
+#Prometheus config
 management:
   endpoints:
     web:
       exposure:
         include: prometheus #注意这里用'*'的话是暴露所有，不太安全
-  endpoint:
-    metrics:
-      enabled: true
+
+
+#scrape_configs:
+#  - job_name: 'consul-node-exporter'
+#    metrics_path: '/actuator/prometheus'
+#    relabel_configs:
+#      - source_labels: [__address__]
+#        separator: ':'
+#        regex: '(.*):(8300)'
+#        target_label: __address__
+#        replacement: '${1}:8080'
+#    consul_sd_configs:
+#      - server: '127.0.0.1:8500'
+
+#        "http://127.0.0.1:8300/actuator/prometheus"
+
+
+

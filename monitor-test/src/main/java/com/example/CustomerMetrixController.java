@@ -13,8 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/test/promethues/")
 @Slf4j
-public class PrometheusTestController1 {
-
+public class CustomerMetrixController {
+// 成功数/失败数
+// 单个接口的请求耗时 &技术
     // Counter是计数器从0增加
     private final Counter totalCallsCounter;
     private final Counter successfulCallsCounter;
@@ -23,7 +24,7 @@ public class PrometheusTestController1 {
     private final Gauge successDoubleRateGauge;
 
     @Autowired
-    public PrometheusTestController1(MeterRegistry meterRegistry) {
+    public CustomerMetrixController(MeterRegistry meterRegistry) {
         totalCallsCounter = Counter.builder("custom_total_calls")
                 .description("Custom total calls counter")
                 .register(meterRegistry);
@@ -32,7 +33,7 @@ public class PrometheusTestController1 {
                 .description("Custom successful calls counter")
                 .register(meterRegistry);
 
-        successDoubleRateGauge = Gauge.builder("custom_double_success_rate_gague", this, PrometheusTestController1::calculateSuccessRate)
+        successDoubleRateGauge = Gauge.builder("custom_double_success_rate_gague", this, CustomerMetrixController::calculateSuccessRate)
                 .description("Custom success rate gauge")
                 .register(meterRegistry);
     }
