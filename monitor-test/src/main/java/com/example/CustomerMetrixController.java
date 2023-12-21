@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class CustomerMetrixController {
 // 成功数/失败数
-// 单个接口的请求耗时 &技术
+// 单个接口的请求耗时 &计数
     // Counter是计数器从0增加
     private final Counter totalCallsCounter;
     private final Counter successfulCallsCounter;
