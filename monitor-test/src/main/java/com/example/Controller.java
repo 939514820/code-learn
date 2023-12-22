@@ -1,6 +1,7 @@
 package com.example;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -18,5 +19,10 @@ public class Controller {
     @GetMapping("getbyUid1")
     public String getNameNew(String uid) {
         return uid;
+    }
+    @RequestMapping(value = "/index")
+    public Object index() {
+        Integer integer = Integer.valueOf("123s");
+        return " index of springboot2-prometheus.";
     }
 }

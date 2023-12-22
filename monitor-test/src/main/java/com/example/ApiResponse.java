@@ -1,5 +1,7 @@
 package com.example;
 
+import com.example.exception.BizException;
+import com.example.exception.BizExceptionCode;
 import lombok.Data;
 
 @Data
@@ -20,7 +22,7 @@ public class ApiResponse {
         return resultBean;
     }
 
-    public static ApiResponse error(BizExceptionType customExceptionType,
+    public static ApiResponse error(BizExceptionCode customExceptionType,
                                     String errorMessage) {
         ApiResponse resultBean = new ApiResponse();
         resultBean.setSuccess(false);

@@ -1,4 +1,4 @@
-package com.example;
+package com.example.exception;
 
 public class BizException extends RuntimeException {
     //异常错误编码
@@ -8,12 +8,12 @@ public class BizException extends RuntimeException {
 
     private BizException(){}
 
-    public BizException(BizExceptionType exceptionTypeEnum) {
+    public BizException(BizExceptionCode exceptionTypeEnum) {
         this.code = exceptionTypeEnum.getCode();
         this.message = exceptionTypeEnum.getDesc();
     }
 
-    public BizException(BizExceptionType exceptionTypeEnum, String message) {
+    public BizException(BizExceptionCode exceptionTypeEnum, String message) {
         this.code = exceptionTypeEnum.getCode();
         this.message = message;
     }
